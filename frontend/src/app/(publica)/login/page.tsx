@@ -2,7 +2,6 @@
 
 import { useState } from 'react'
 import { useRouter } from 'next/navigation'
-import { handleLogin } from "@/app/actions/auth"
 
 export default function LoginPage() {
     const [error, setError] = useState<string | null>(null)
@@ -14,17 +13,32 @@ export default function LoginPage() {
         setError(null)
 
         try {
-            const result = await handleLogin(formData)
+            const email = formData.get('email')?.toString()
+            const password = formData.get('password')?.toString()
 
-            if ('error' in result) {
-                setError(result.error!)
+            if (!email || !password) {
+                setError('Email e senha são obrigatórios')
                 return
             }
 
-             router.push('/dashboard')
+            const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/login`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ email, password }),
+                credentials: 'include', 
+            })
+
+            if (!res.ok) {
+                const { error, message } = await res.json().catch(() => ({}))
+                setError(error || message || 'Falha no login')
+                return
+            }
+
+            // aqui o cookie já foi salvo automaticamente pelo navegador
+            router.push('/dashboard')
         } catch (err) {
             console.error('Unexpected error:', err)
-            setError('An unexpected error occurred. Please try again.')
+            setError('Erro inesperado. Tente novamente.')
         } finally {
             setIsLoading(false)
         }
@@ -52,6 +66,7 @@ export default function LoginPage() {
                             id="email"
                             name="email"
                             type="email"
+                            autoComplete="email"
                             className="w-full px-4 py-3 bg-gray-700 border border-gray-600 rounded-lg text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-colors"
                             placeholder="seu@email.com"
                             required
@@ -67,6 +82,7 @@ export default function LoginPage() {
                             id="password"
                             name="password"
                             type="password"
+                            autoComplete="current-password"
                             className="w-full px-4 py-3 bg-gray-700 border border-gray-600 rounded-lg text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-colors"
                             placeholder="Sua senha"
                             required

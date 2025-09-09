@@ -7,7 +7,7 @@ export class AuthenticateUserController {
 
     try {
       const authenticateUserService = new AuthenticateUserService();
-      const { id, name, email: userEmail, isAdmin, token } = await authenticateUserService.execute({ email, password });
+      const { token } = await authenticateUserService.execute({ email, password });
 
       res.cookie('token', token, {
         httpOnly: true,
@@ -17,7 +17,6 @@ export class AuthenticateUserController {
       });
 
       return res.json({
-        user: { id, name, email: userEmail, isAdmin },
         token
       });
     } catch (err: any) {

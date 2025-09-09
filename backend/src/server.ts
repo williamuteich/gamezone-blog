@@ -10,9 +10,9 @@ app.use(express.json());
 app.use(cookieParser());
 
 app.use(cors({
-  origin: 'http://localhost:3000', 
-  credentials: true,               
-}));
+  origin: true, 
+  credentials: true, 
+}))
 
 app.use(router);
 
@@ -23,4 +23,4 @@ app.use((err: Error, req: Request, res: Response, next: NextFunction) => {
   return res.status(500).json({ error: 'Erro interno do servidor' });
 });
 
-app.listen(3333, () => console.log('Servidor online!'));
+app.listen(process.env.PORT, () => console.log('Servidor online!'));
