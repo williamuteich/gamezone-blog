@@ -1,4 +1,6 @@
 import { NextResponse, type MiddlewareConfig, type NextRequest } from 'next/server'
+import { jwtVerify } from 'jose'
+
 
 const publicRoutes = [
     { path: '/login', whenAuthenticated: 'redirect' },
@@ -7,7 +9,17 @@ const publicRoutes = [
 
 const REDIRECT_WHEN_NOT_AUTHENTICATED_ROUTE = '/login'
 
-export function middleware(request: NextRequest) {
+async function verifyJWT(token: string) {
+    try {
+        const secret = new TextEncoder().encode(process.env.JWT_SECRET)
+        const { payload } = await jwtVerify(token, secret, { algorithms: ["HS256"] })
+        return payload
+    } catch (err) {
+        return null
+    }
+}
+
+export async function middleware(request: NextRequest) {
     const path = request.nextUrl.pathname
 
     const publicRoute = publicRoutes.find(route => route.path === path)
@@ -34,15 +46,18 @@ export function middleware(request: NextRequest) {
     }
 
     if (authToken && !publicRoute) {
-        //checar se o JWT está EXPIRADO
-        //Se sim, remover o cookie e redirecionar para /login
-        //aplicar uma estrategia de refresh token
+        const payload = await verifyJWT(authToken)
 
+        if (!payload) {
+            const response = NextResponse.redirect(new URL("/login", request.url))
+            response.cookies.delete("token")
+            return response
+        }
 
         return NextResponse.next()
+
     }
 
-    console.log("funcionou o middleware")
     return NextResponse.next()
 }
 
