@@ -8,9 +8,10 @@ import {
     SheetTitle,
     SheetTrigger,
 } from "@/components/ui/sheet"
-import { Menu, Home, Users, FileText, Settings, BarChart3, LogOut, Package } from "lucide-react"
+import { Menu, Home, Users, FileText, Settings, BarChart3, Package } from "lucide-react"
 import Link from "next/link"
 import { usePathname } from "next/navigation"
+import ButtonLogout from "../../compoente/ButtonLogout"
 
 export default function Sidebar() {
     const pathname = usePathname();
@@ -51,10 +52,7 @@ export default function Sidebar() {
                     ))}
 
                     <div className="border-t border-gray-700 mt-6 pt-4">
-                        <button className="flex cursor-pointer items-center gap-3 px-3 py-3 rounded-lg text-gray-300 hover:bg-red-900/50 hover:text-red-400 transition-colors w-full">
-                            <LogOut className="h-5 w-5" />
-                            Logout
-                        </button>
+                        <ButtonLogout/>
                     </div>
                 </nav>
             </SheetContent>

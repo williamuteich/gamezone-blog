@@ -8,7 +8,9 @@ export default function DashboardLayout({
     return (
         <div className="min-h-screen bg-gradient-to-br from-gray-900 to-gray-950 text-white">
             <DashboardHeader />
-            {children}
+            <div className="pt-[70px]">
+                {children}
+            </div>
         </div>
     )
 }

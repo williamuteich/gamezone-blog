@@ -3,7 +3,7 @@ import Sidebar from "./Sidebar";
 export default function DashboardHeader() {
 
   return (
-    <header className="bg-gray-800/50 backdrop-blur-md border-b border-gray-700">
+    <header className="bg-gray-800/50 backdrop-blur-md border-b border-gray-700 fixed w-full">
       <div className="container mx-auto px-4 py-4 flex justify-between items-center">
         <div className="flex items-center space-x-2">
           <Sidebar />
