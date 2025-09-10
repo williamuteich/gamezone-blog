@@ -1,15 +1,16 @@
-import DashboardHeader from './components/DashboardHeader';
-import StatsGrid from './components/StatsGrid';
-import RecentPosts from './components/RecentPosts';
-import QuickActions from './components/QuickActions';
+import { requireAuth } from "@/lib/auth";
+import QuickActions from "./components/QuickActions";
+import RecentPosts from "./components/RecentPosts";
+import StatsGrid from "./components/StatsGrid";
+import Container from "../compoente/Containet";
 
-export default function DashboardPage() {
 
+export default async function DashboardPage() {
+  const user = await requireAuth();
   return (
     <div className="min-h-screen bg-gradient-to-br from-gray-900 to-gray-950 text-white">
-      <DashboardHeader />
       
-      <main className="container mx-auto px-4 py-8">
+      <Container>
         <div className="mb-8">
           <h1 className="text-3xl font-bold">Dashboard</h1>
           <p className="text-gray-400">Bem-vindo ao painel de controle do GameZone</p>
@@ -24,7 +25,7 @@ export default function DashboardPage() {
             <QuickActions />
           </div>
         </div>
-      </main>
+      </Container>
     </div>
   );
 }
