@@ -4,6 +4,7 @@ import { Search, Filter } from "lucide-react";
 import UserStats from "./components/UserStats";
 import UserCard from "./components/UserCard";
 import UserFormDialog from "./components/UserFormDialog";
+import { User } from "@/types/user";
 
 export default async function UsersPage() {
     const { token } = await requireAuth();
@@ -51,7 +52,7 @@ export default async function UsersPage() {
 
                 {/* Cards dos usuários */}
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                    {users.map((user) => (
+                    {users.map((user: User) => (
                         <UserCard key={user.id} user={user} />
                     ))}
                 </div>

@@ -1,36 +1,19 @@
 'use client'
 
 import {
-    AlertDialog,
-    AlertDialogAction,
-    AlertDialogCancel,
-    AlertDialogContent,
-    AlertDialogDescription,
-    AlertDialogFooter,
-    AlertDialogHeader,
-    AlertDialogTitle,
-    AlertDialogTrigger,
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogTrigger,
 } from "@/components/ui/alert-dialog"
+import { User, DeleteUserDialogProps } from "@/types/user"
 
-interface User {
-    id: number;
-    name: string;
-    email: string;
-    avatar: string;
-    role: string;
-    createdAt: string;
-    posts: number;
-    isAdmin: boolean;
-}
-
-interface DeleteUserDialogProps {
-    user: User;
-    children: React.ReactNode;
-}
-
-export default function DeleteUserDialog({ user, children }: DeleteUserDialogProps) {
-
-    return (
+export default function DeleteUserDialog({ user, children }: DeleteUserDialogProps) {    return (
         <AlertDialog>
             <AlertDialogTrigger asChild>
                 {children}

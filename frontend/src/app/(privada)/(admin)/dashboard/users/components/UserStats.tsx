@@ -1,19 +1,5 @@
 import { User, Shield } from "lucide-react";
-
-interface User {
-    id: number;
-    name: string;
-    email: string;
-    avatar: string;
-    role: string;
-    createdAt: string;
-    posts: number;
-    isAdmin: boolean;
-}
-
-interface UserStatsProps {
-    users: User[];
-}
+import { User as UserType, UserStatsProps } from "@/types/user";
 
 export default function UserStats({ users }: UserStatsProps) {
     return (
