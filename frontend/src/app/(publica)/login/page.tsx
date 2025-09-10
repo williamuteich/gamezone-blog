@@ -99,7 +99,7 @@ export default function LoginPage() {
                     <button
                         type="submit"
                         disabled={isLoading}
-                        className={`w-full text-white py-3 px-4 rounded-lg font-medium transition-all ${isLoading
+                        className={`w-full text-white cursor-pointer py-3 px-4 rounded-lg font-medium transition-all ${isLoading
                             ? 'bg-blue-400 cursor-not-allowed'
                             : 'bg-blue-600 hover:bg-blue-500'
                             }`}
