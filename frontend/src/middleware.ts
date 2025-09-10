@@ -12,7 +12,12 @@ const REDIRECT_WHEN_NOT_AUTHENTICATED_ROUTE = '/login'
 async function verifyJWT(token: string) {
     try {
         const secret = new TextEncoder().encode(process.env.JWT_SECRET)
-        const { payload } = await jwtVerify(token, secret, { algorithms: ["HS256"] })
+        const { payload } = await jwtVerify(token, secret, { algorithms: ['HS256'] })
+
+        if (payload.exp && Date.now() >= payload.exp * 1000) {
+            return null;
+        }
+
         return payload
     } catch (err) {
         return null
@@ -21,37 +26,36 @@ async function verifyJWT(token: string) {
 
 export async function middleware(request: NextRequest) {
     const path = request.nextUrl.pathname
-
     const publicRoute = publicRoutes.find(route => route.path === path)
     const authToken = request.cookies.get('token')?.value
+    const payload = authToken ? await verifyJWT(authToken) : null
 
-    if (!authToken && publicRoute) {
-        return NextResponse.next()
-    }
+
+    if (!authToken && publicRoute) return NextResponse.next()
 
     if (!authToken && !publicRoute) {
         const redirectUrl = request.nextUrl.clone()
-
         redirectUrl.pathname = REDIRECT_WHEN_NOT_AUTHENTICATED_ROUTE
-
         return NextResponse.redirect(redirectUrl)
     }
 
     if (authToken && publicRoute && publicRoute.whenAuthenticated === 'redirect') {
         const redirectUrl = request.nextUrl.clone()
-
-        redirectUrl.pathname = '/dashboard'
-
+        redirectUrl.pathname = payload?.isAdmin ? '/dashboard' : '/profile'
         return NextResponse.redirect(redirectUrl)
     }
 
     if (authToken && !publicRoute) {
-        const payload = await verifyJWT(authToken)
-
-        if (!payload) {
-            const response = NextResponse.redirect(new URL("/login", request.url))
-            response.cookies.delete("token")
+        if (!payload) { 
+            const response = NextResponse.redirect(new URL(REDIRECT_WHEN_NOT_AUTHENTICATED_ROUTE, request.url))
+            response.cookies.delete('token')
             return response
+        }
+
+        if (path.startsWith('/dashboard') && !payload.isAdmin) {
+            const redirectUrl = request.nextUrl.clone()
+            redirectUrl.pathname = '/profile'
+            return NextResponse.redirect(redirectUrl)
         }
 
         return NextResponse.next()

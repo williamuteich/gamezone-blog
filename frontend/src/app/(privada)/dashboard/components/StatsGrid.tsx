@@ -2,27 +2,26 @@ import { cookies } from 'next/headers';
 import { redirect } from 'next/navigation';
 
 export default async function StatsGrid() {
-  const cookieStore = await cookies();
-  const token = cookieStore.get('token')?.value;
+  //const cookieStore = await cookies();
+  //const token = cookieStore.get('token')?.value;
+//
+  //const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/users`, {
+  //  headers: {
+  //    'Content-Type': 'application/json',
+  //    Authorization: `Bearer ${token}`,
+  //  },
+  //});
+//
+  //if (res.status === 401) {
+  //  redirect('/api/logout'); 
+  //}
 
-  const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/users`, {
-    headers: {
-      'Content-Type': 'application/json',
-      Authorization: `Bearer ${token}`,
-    },
-  });
+  //if (!res.ok) {
+  //  console.log("Falha ao buscar dados da API:", res.status)
+  //  return null
+  //}
 
-  if (res.status === 401) {
-    redirect('/api/logout'); 
-  }
-
-  if (!res.ok) {
-    console.log("Falha ao buscar dados da API:", res.status)
-    return null
-  }
-
-  const data = await res.json()
-  console.log("Resposta da API:", data)
+  //const data = await res.json()
   const stats = [
     {
       title: 'Total de Visualizações',
