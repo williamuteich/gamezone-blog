@@ -6,41 +6,16 @@ import UserCard from "./components/UserCard";
 import UserFormDialog from "./components/UserFormDialog";
 
 export default async function UsersPage() {
-    await requireAuth();
+    const { token } = await requireAuth();
 
-    // Dados mockados dos usuários
-    const users = [
-        {
-            id: 1,
-            name: "João Silva",
-            email: "joao.silva@email.com",
-            avatar: "https://ui-avatars.com/api/?name=João+Silva&background=3B82F6&color=fff",
-            role: "Admin",
-            createdAt: "15 Jan 2024",
-            posts: 23,
-            isAdmin: true
+    const user = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/users`, {
+        headers: {
+            'Content-Type': 'application/json',
+            Authorization: `Bearer ${token}`,
         },
-        {
-            id: 2,
-            name: "Maria Santos",
-            email: "maria.santos@email.com",
-            avatar: "https://ui-avatars.com/api/?name=Maria+Santos&background=10B981&color=fff",
-            role: "Editor",
-            createdAt: "08 Fev 2024",
-            posts: 15,
-            isAdmin: false
-        },
-        {
-            id: 3,
-            name: "Pedro Costa",
-            email: "pedro.costa@email.com",
-            avatar: "https://ui-avatars.com/api/?name=Pedro+Costa&background=F59E0B&color=fff",
-            role: "Usuário",
-            createdAt: "22 Mar 2024",
-            posts: 7,
-            isAdmin: false
-        }
-    ];
+    })
+
+    const users = await user.json();
 
     return (
         <Container>
@@ -52,7 +27,7 @@ export default async function UsersPage() {
                         <p className="text-gray-400 mt-1">Gerencie os usuários da plataforma</p>
                     </div>
                     <UserFormDialog mode="add">
-                        <button className="px-4 py-2 bg-blue-600 hover:bg-blue-500 text-white rounded-lg transition-colors">
+                        <button className="px-4 py-2 cursor-pointer bg-blue-600 hover:bg-blue-500 text-white rounded-lg transition-colors">
                             + Novo Usuário
                         </button>
                     </UserFormDialog>
@@ -68,7 +43,7 @@ export default async function UsersPage() {
                             className="w-full pl-10 pr-4 py-2 bg-gray-800 border border-gray-700 rounded-lg text-white placeholder-gray-400 focus:outline-none focus:border-blue-500"
                         />
                     </div>
-                    <button className="px-4 py-2 bg-gray-800 border border-gray-700 rounded-lg text-gray-300 hover:bg-gray-700 transition-colors flex items-center gap-2">
+                    <button className="px-4 py-2 cursor-pointer bg-gray-800 border border-gray-700 rounded-lg text-gray-300 hover:bg-gray-700 transition-colors flex items-center gap-2">
                         <Filter className="h-4 w-4" />
                         Filtros
                     </button>

@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import "./globals.css";
+import { SessionProvider } from "./components/sessionProvider";
 
 export const metadata: Metadata = {
   title: "GameZone - Seu portal definitivo para o universo dos games",
@@ -13,7 +14,9 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body className="bg-gray-900 text-white">{children}</body>
+      <body className="bg-gray-900 text-white">
+        <SessionProvider>{children}</SessionProvider>
+      </body>
     </html>
   );
 }

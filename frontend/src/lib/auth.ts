@@ -26,11 +26,14 @@ export async function getCurrentUser() {
 }
 
 export async function requireAuth() {
-    const user = await getCurrentUser();
+    const cookieStore = await cookies();
+    const token = cookieStore.get("token")?.value;
+    const user = await getUserFromCookie(token);
 
     if (!user) {
         redirect("/login");
     }
 
-    return user;
+    return { user, token };
 }
+

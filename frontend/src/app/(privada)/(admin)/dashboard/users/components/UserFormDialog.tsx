@@ -97,12 +97,12 @@ export default function UserFormDialog({ user, mode, children }: UserFormDialogP
                         <DialogClose asChild>
                             <Button 
                                 variant="outline" 
-                                className="bg-gray-700 border-gray-600 text-white hover:bg-gray-600"
+                                className="bg-gray-700 cursor-pointer hover:text-white border-gray-600 text-white hover:bg-gray-600"
                             >
                                 Cancelar
                             </Button>
                         </DialogClose>
-                        <Button type="submit">
+                        <Button type="submit" className="bg-blue-600 cursor-pointer hover:bg-blue-500 text-white">
                             {mode === 'add' ? 'Criar Usuário' : 'Salvar Alterações'}
                         </Button>
                     </DialogFooter>
