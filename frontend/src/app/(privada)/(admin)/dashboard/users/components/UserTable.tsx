@@ -7,6 +7,23 @@ interface UserTableProps {
 }
 
 export default function UserTable({ users }: UserTableProps) {
+  // Verificar se users é um array válido
+  if (!Array.isArray(users)) {
+    return (
+      <div className="bg-gray-800/50 backdrop-blur-sm rounded-xl border border-gray-700 p-8 text-center">
+        <p className="text-gray-400">Erro ao carregar usuários</p>
+      </div>
+    );
+  }
+
+  if (users.length === 0) {
+    return (
+      <div className="bg-gray-800/50 backdrop-blur-sm rounded-xl border border-gray-700 p-8 text-center">
+        <p className="text-gray-400">Nenhum usuário encontrado</p>
+      </div>
+    );
+  }
+
   // Função para pegar as iniciais do nome
   const getInitials = (name: string) => {
     return name
@@ -39,15 +56,15 @@ export default function UserTable({ users }: UserTableProps) {
 
   // Função para obter ícone e cor da role
   const getRoleIcon = (user: User) => {
-    const isAdmin = user.isAdmin || user.role.toLowerCase() === 'admin';
-    const isEditor = user.role.toLowerCase() === 'editor';
-
-    if (isAdmin) {
-      return { icon: Crown, color: 'text-purple-400 bg-purple-600/20' };
-    } else if (isEditor) {
-      return { icon: Edit, color: 'text-blue-400 bg-blue-600/20' };
+    // Simplificar a lógica - usar apenas o campo role
+    const userRole = user.role?.toLowerCase() || 'user';
+    
+    if (userRole === 'admin') {
+      return { icon: Crown, color: 'text-purple-400 bg-purple-900/30 border border-purple-500/20' };
+    } else if (userRole === 'editor') {
+      return { icon: Edit, color: 'text-blue-400 bg-blue-900/30 border border-blue-500/20' };
     } else {
-      return { icon: UserIcon, color: 'text-gray-400 bg-gray-600/20' };
+      return { icon: UserIcon, color: 'text-orange-400 bg-orange-900/30 border border-orange-500/20' };
     }
   };
 

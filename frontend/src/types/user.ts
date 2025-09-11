@@ -33,5 +33,10 @@ export interface DeleteUserDialogProps {
 }
 
 export interface UserStatsProps {
-    users: User[];
+    users?: User[];
+    stats?: {
+        totalUsers: number;
+        activeUsers: number;
+        adminUsers: number;
+    };
 }

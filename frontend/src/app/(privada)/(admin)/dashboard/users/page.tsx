@@ -1,27 +1,73 @@
 import { requireAuth } from "@/lib/auth";
 import Container from "../../compoente/Containet";
-import { Search, Filter } from "lucide-react";
 import UserStats from "./components/UserStats";
 import UserTable from "./components/UserTable";
 import UserFormDialog from "./components/UserFormDialog";
-import { User } from "@/types/user";
+import SearchItems from "@/app/components/searchItem";
+import Paginacao from "@/app/components/paginacao";
+import { FiltroBuscarItem } from "@/app/components/FiltroBuscarItem";
 
-export default async function UsersPage() {
+export default async function UsersPage({ searchParams }: { searchParams: Promise<{ search: string, page: string, status: string, role: string }> }) {
+    const { search, page, status, role } = await searchParams;
+
     const { token } = await requireAuth();
 
-    const user = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/users`, {
+    const currentPage = page ? parseInt(page) : 1;
+    
+    const user = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/users?${search ? `search=${search}&` : ''}${page ? `page=${page}&` : ''}${status ? `status=${status}&` : ''}${role ? `role=${role}&` : ''}limit=3`, {
         headers: {
             'Content-Type': 'application/json',
             Authorization: `Bearer ${token}`,
         },
+        cache: 'no-store',
+        next: { revalidate: 0 }
     })
 
-    const users = await user.json();
+    let users = [];
+    let pagination = {
+        currentPage: 1,
+        totalPages: 1,
+        totalUsers: 0,
+        limit: 3,
+        hasNext: false,
+        hasPrevious: false
+    };
+    let stats = {
+        totalUsers: 0,
+        activeUsers: 0,
+        adminUsers: 0
+    };
+    
+    if (!user.ok) {
+        console.error('Error fetching users:', user.status, user.statusText);
+    } else {
+        const response = await user.json();
+        
+        if (response && typeof response === 'object') {
+            // Nova estrutura com paginação
+            if (response.users && Array.isArray(response.users)) {
+                users = response.users;
+                pagination = response.pagination || pagination;
+                stats = response.stats || stats;
+                
+            } 
+            // Compatibilidade com estrutura antiga (array direto)
+            else if (Array.isArray(response)) {
+                users = response;
+                // Para compatibilidade, calcular stats dos dados disponíveis
+                stats = {
+                    totalUsers: response.length,
+                    activeUsers: response.filter((u: any) => u.status).length,
+                    adminUsers: response.filter((u: any) => u.isAdmin).length
+                };
+            }
+        }
+        
+    }
 
     return (
         <Container>
             <div className="space-y-6">
-                {/* Header da página */}
                 <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
                     <div>
                         <h1 className="text-3xl font-bold text-white">Usuários</h1>
@@ -35,26 +81,19 @@ export default async function UsersPage() {
                 </div>
 
                 {/* Estatísticas */}
-                <UserStats users={users} />
+                <UserStats users={users} stats={stats} />
 
                 {/* Filtros e busca */}
                 <div className="flex flex-col sm:flex-row gap-4">
-                    <div className="relative flex-1">
-                        <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 h-4 w-4" />
-                        <input
-                            type="text"
-                            placeholder="Buscar usuários..."
-                            className="w-full pl-10 pr-4 py-2 bg-gray-800 border border-gray-700 rounded-lg text-white placeholder-gray-400 focus:outline-none focus:border-blue-500"
-                        />
-                    </div>
-                    <button className="px-4 py-2 cursor-pointer bg-gray-800 border border-gray-700 rounded-lg text-gray-300 hover:bg-gray-700 transition-colors flex items-center gap-2">
-                        <Filter className="h-4 w-4" />
-                        Filtros
-                    </button>
+                    <SearchItems />
+                    <FiltroBuscarItem />
                 </div>
 
                 {/* Tabela de usuários */}
-                <UserTable users={users} />
+                <UserTable key={`users-table-${currentPage}-${users.length}`} users={users} />
+
+                {/* Paginação */}
+                <Paginacao data={users} totalRecords={pagination.totalUsers} />
             </div>
         </Container>
     )
