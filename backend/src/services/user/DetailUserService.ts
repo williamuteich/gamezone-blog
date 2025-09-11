@@ -6,6 +6,10 @@ export interface DetailUserRequest {
 
 export class DetailUserService {
   async execute({ id }: DetailUserRequest) {
+
+    if (!id) {
+      throw new Error('User ID is required');
+    }
     
   const user = await prisma.user.findFirst({
     where: { id },
@@ -18,6 +22,10 @@ export class DetailUserService {
       updatedAt: true,
     }
   });
+
+    if (!user) {
+      throw new Error('User not found');
+    }
 
     return user;
   }

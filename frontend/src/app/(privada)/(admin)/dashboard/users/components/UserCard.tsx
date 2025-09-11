@@ -1,5 +1,3 @@
-'use client'
-
 import { Mail, Calendar, Shield, MoreVertical } from "lucide-react";
 import UserFormDialog from "./UserFormDialog";
 import DeleteUserDialog from "./DeleteUserDialog";

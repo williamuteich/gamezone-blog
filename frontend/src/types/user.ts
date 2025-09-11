@@ -1,4 +1,5 @@
 export interface User {
+    imageUrl: string | Blob | undefined;
     id: string;
     name: string;
     email: string;

@@ -1,19 +1,20 @@
-'use client'
 
 import {
-  AlertDialog,
-  AlertDialogAction,
-  AlertDialogCancel,
-  AlertDialogContent,
-  AlertDialogDescription,
-  AlertDialogFooter,
-  AlertDialogHeader,
-  AlertDialogTitle,
-  AlertDialogTrigger,
+    AlertDialog,
+    AlertDialogAction,
+    AlertDialogCancel,
+    AlertDialogContent,
+    AlertDialogDescription,
+    AlertDialogFooter,
+    AlertDialogHeader,
+    AlertDialogTitle,
+    AlertDialogTrigger,
 } from "@/components/ui/alert-dialog"
 import { User, DeleteUserDialogProps } from "@/types/user"
+import { deleteRecord } from "@/app/actions/deleteRecord"
 
-export default function DeleteUserDialog({ user, children }: DeleteUserDialogProps) {    return (
+export default function DeleteUserDialog({ user, children }: DeleteUserDialogProps) {
+    return (
         <AlertDialog>
             <AlertDialogTrigger asChild>
                 {children}
@@ -30,11 +31,17 @@ export default function DeleteUserDialog({ user, children }: DeleteUserDialogPro
                     <AlertDialogCancel className="bg-gray-700 border-gray-600 text-white hover:bg-gray-600">
                         Cancelar
                     </AlertDialogCancel>
-                    <AlertDialogAction
-                        className="bg-red-600 hover:bg-red-500 text-white"
-                    >
-                        Excluir
-                    </AlertDialogAction>
+                    <form action={deleteRecord}>
+                        <input type="hidden" name="id" value={user.id} />
+                        <input type="hidden" name="url" value="users" />
+                        <input type="hidden" name="revalidate" value="/dashboard/users" />
+                        <AlertDialogAction
+                            type="submit"
+                            className="bg-red-600 hover:bg-red-500 text-white"
+                        >
+                            Excluir
+                        </AlertDialogAction>
+                    </form>
                 </AlertDialogFooter>
             </AlertDialogContent>
         </AlertDialog>

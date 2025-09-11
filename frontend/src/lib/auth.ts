@@ -14,7 +14,7 @@ export async function getUserFromCookie(token: string | undefined) {
         }
 
         return payload;
-    } catch (error) {
+    } catch {
         return null;
     }
 }
@@ -22,12 +22,19 @@ export async function getUserFromCookie(token: string | undefined) {
 export async function getCurrentUser() {
     const cookieStore = await cookies();
     const token = cookieStore.get("token")?.value;
-    return await getUserFromCookie(token);
+
+    if (!token) return null;
+
+    const user = await getUserFromCookie(token);
+    if (!user) return null;
+
+    return { user, token };
 }
 
 export async function requireAuth() {
     const cookieStore = await cookies();
     const token = cookieStore.get("token")?.value;
+
     const user = await getUserFromCookie(token);
 
     if (!user) {
@@ -36,4 +43,3 @@ export async function requireAuth() {
 
     return { user, token };
 }
-

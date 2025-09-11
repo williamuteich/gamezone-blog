@@ -34,6 +34,10 @@ export class CreateUserService {
       data: { ...data, password: passwordHash },
     });
 
+    if (!user) {
+      throw new Error('User creation failed');
+    }
+
     const { password, ...userWithoutPassword } = user;
     return userWithoutPassword;
   }
