@@ -8,8 +8,8 @@ export class DetailUserController {
       const detailUserService = new DetailUserService();
       const user = await detailUserService.execute({ id: userID });
       return res.json(user);
-    } catch (err: any) {
-      return res.status(400).json({ error: err.message });
+    } catch (error) {
+      return res.status(400).json({ error: error.message });
     }
   }
 }

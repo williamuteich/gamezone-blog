@@ -29,7 +29,7 @@ export default function AfiliadoActionsDropdown({ afiliado }: AfiliadoActionsDro
     <>
       <div className="relative">
         <button 
-          className="p-1 hover:bg-gray-700 rounded transition-colors"
+          className="p-1 cursor-pointer hover:bg-gray-700 rounded transition-colors"
           onClick={() => setIsDropdownOpen(!isDropdownOpen)}
         >
           <MoreVertical className="h-4 w-4 text-gray-400" />
@@ -44,7 +44,7 @@ export default function AfiliadoActionsDropdown({ afiliado }: AfiliadoActionsDro
             />
             
             {/* Menu dropdown */}
-            <div className="absolute right-0 top-8 z-20 bg-gray-800 border border-gray-700 rounded-lg shadow-lg min-w-[120px] py-1">
+            <div className="absolute cursor-pointer right-8 -top-[28px] z-20 bg-gray-800 border border-gray-700 rounded-lg shadow-lg min-w-[120px] py-1">
               <button 
                 className="w-full cursor-pointer px-3 py-2 text-left text-sm text-white hover:bg-gray-700 transition-colors flex items-center gap-2"
                 onClick={handleEditClick}

@@ -7,8 +7,8 @@ export class GetAllUserController {
       const getAllUsersService = new GetAllUsersService();
       const users = await getAllUsersService.execute(req);
       return res.json(users);
-    } catch (err: any) {
-      return res.status(400).json({ error: err.message });
+    } catch (error) {
+      return res.status(400).json({ error: error.message });
     }
   }
 }

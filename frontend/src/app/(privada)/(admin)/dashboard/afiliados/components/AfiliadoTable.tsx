@@ -8,6 +8,23 @@ interface AfiliadoTableProps {
 }
 
 export default function AfiliadoTable({ afiliados }: AfiliadoTableProps) {
+    // Verificar se afiliados é um array válido
+    if (!Array.isArray(afiliados)) {
+        return (
+            <div className="bg-gray-800/50 backdrop-blur-sm rounded-xl border border-gray-700 p-8 text-center">
+                <p className="text-gray-400">Erro ao carregar afiliados</p>
+            </div>
+        );
+    }
+
+    if (afiliados.length === 0) {
+        return (
+            <div className="bg-gray-800/50 backdrop-blur-sm rounded-xl border border-gray-700 p-8 text-center">
+                <p className="text-gray-400">Nenhum produto afiliado encontrado</p>
+            </div>
+        );
+    }
+
     return (
         <div className="bg-gray-800/50 backdrop-blur-sm rounded-xl border border-gray-700 overflow-hidden">
             <div className="overflow-x-auto">
@@ -33,8 +50,18 @@ export default function AfiliadoTable({ afiliados }: AfiliadoTableProps) {
                                 {/* Produto */}
                                 <td className="p-4">
                                     <div className="flex items-center gap-3">
-                                        <div className="w-12 h-12 rounded-lg bg-gradient-to-br from-blue-500 to-purple-600 flex items-center justify-center">
-                                            <Package className="h-6 w-6 text-white" />
+                                        <div className="w-12 h-12 rounded-lg overflow-hidden border border-gray-600">
+                                            {afiliado.imageUrl ? (
+                                                <img 
+                                                    src={`${process.env.NEXT_PUBLIC_API_URL}/files/affiliates/${afiliado.imageUrl}`}
+                                                    alt={afiliado.title}
+                                                    className="w-full h-full object-cover"
+                                                />
+                                            ) : (
+                                                <div className="w-full h-full bg-gradient-to-br from-blue-500 to-purple-600 flex items-center justify-center">
+                                                    <Package className="h-6 w-6 text-white" />
+                                                </div>
+                                            )}
                                         </div>
                                         <div>
                                             <p className="font-medium text-white">{afiliado.title}</p>

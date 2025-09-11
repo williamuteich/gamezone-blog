@@ -16,9 +16,16 @@ export class PutAffiliateService {
       throw new Error("ID is required");
     }
 
-    const { id, ...rest } = data;
+    const { id, url, ...rest } = data;
+    
+    // Mapear url para link (nome do campo no banco)
+    const mappedData = {
+      ...rest,
+      ...(url && { link: url })
+    };
+    
     const filteredData = Object.fromEntries(
-      Object.entries(rest).filter(([_, value]) => value !== undefined)
+      Object.entries(mappedData).filter(([_, value]) => value !== undefined)
     );
 
     const findAffiliate = await prisma.affiliate.findFirst({

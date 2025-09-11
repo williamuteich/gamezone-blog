@@ -22,8 +22,19 @@ import { persistData } from "@/app/actions/persistData"
 
 export default function AfiliadoFormDialog({ afiliado, mode, children, open, onOpenChange }: AfiliadoFormDialogProps) {
   const [state, formAction] = useActionState(persistData, null)
+  const [imagePreview, setImagePreview] = useState<string | null>(null)
   const dialogCloseRef = useRef<HTMLButtonElement>(null)
   const formRef = useRef<HTMLFormElement>(null)
+  
+  // Carregar imagem existente quando for edição
+  useEffect(() => {
+    if (mode === "edit" && afiliado?.imageUrl) {
+      setImagePreview(`${process.env.NEXT_PUBLIC_API_URL}/files/affiliates/${afiliado.imageUrl}`)
+    } else {
+      setImagePreview(null)
+    }
+  }, [afiliado, mode])
+  
   useEffect(() => {
     if (state?.success) {
       // Fecha o modal após sucesso
@@ -35,8 +46,22 @@ export default function AfiliadoFormDialog({ afiliado, mode, children, open, onO
       
       // Reseta o formulário
       formRef.current?.reset()
+      setImagePreview(null)
     }
   }, [state, onOpenChange])
+
+  const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0]
+    if (file) {
+      const reader = new FileReader()
+      reader.onloadend = () => {
+        setImagePreview(reader.result as string)
+      }
+      reader.readAsDataURL(file)
+    } else {
+      setImagePreview(null)
+    }
+  }
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
@@ -44,10 +69,10 @@ export default function AfiliadoFormDialog({ afiliado, mode, children, open, onO
       <DialogContent className="sm:max-w-[500px] bg-gray-900 border-gray-700 text-white max-h-[90vh] overflow-y-auto">
         <form ref={formRef} action={formAction}>
           <input type="hidden" name="id" value={afiliado?.id || ""} />
-          <input type="hidden" name="url" value="/afiliados" />
+          <input type="hidden" name="url" value="/affiliates" />
           <input type="hidden" name="method" value={afiliado?.id ? "PUT" : "POST"} />
           <input type="hidden" name="revalidate" value="/dashboard/afiliados" />
-          <input type="hidden" name="imageurl" value={afiliado?.imageUrl || ""} />
+          <input type="hidden" name="imageUrl" value={afiliado?.imageUrl || ""} />
           
           <DialogHeader>
             <DialogTitle>
@@ -62,24 +87,40 @@ export default function AfiliadoFormDialog({ afiliado, mode, children, open, onO
 
           <div className="grid gap-4 mt-4">
             {/* Imagem */}
-            <div className="flex items-center gap-4 p-4 bg-gray-800/50 rounded-lg border border-gray-700">
-              <div className="relative">
-                <div className="w-16 h-16 rounded-lg bg-gradient-to-br from-blue-500 to-purple-600 flex items-center justify-center text-white font-semibold border-2 border-gray-600">
-                  IMG
+            <div className="grid gap-3">
+              <Label htmlFor="image" className="text-white">
+                Imagem do Produto *
+              </Label>
+              <div className="flex items-center gap-4 p-4 bg-gray-800/50 rounded-lg border border-gray-700">
+                <div className="relative">
+                  <div className="w-16 h-16 rounded-lg border-2 border-gray-600 overflow-hidden">
+                    {imagePreview ? (
+                      <img 
+                        src={imagePreview} 
+                        alt="Preview" 
+                        className="w-full h-full object-cover"
+                      />
+                    ) : (
+                      <div className="w-full h-full bg-gradient-to-br from-blue-500 to-purple-600 flex items-center justify-center text-white font-semibold">
+                        IMG
+                      </div>
+                    )}
+                  </div>
                 </div>
-              </div>
-              <div className="flex-1">
-                <Button
-                  type="button"
-                  variant="outline"
-                  className="w-full cursor-pointer bg-gray-700 border-gray-600 text-white hover:bg-gray-600 hover:text-white"
-                >
-                  <Upload className="w-4 h-4 mr-2" />
-                  {afiliado?.imageUrl ? "Alterar Imagem" : "Adicionar Imagem"}
-                </Button>
-                <p className="text-xs text-gray-400 mt-1">
-                  URL da imagem do produto
-                </p>
+                <div className="flex-1">
+                  <Input
+                    id="image"
+                    name="image"
+                    type="file"
+                    accept="image/*"
+                    onChange={handleImageChange}
+                    className="bg-gray-800 border-gray-700 text-white file:bg-gray-700 file:text-white file:border-0 file:rounded file:mr-2 cursor-pointer file:cursor-pointer"
+                    required={mode === "add"}
+                  />
+                  <p className="text-xs text-gray-400 mt-1">
+                    Formatos aceitos: JPG, PNG, GIF (obrigatório)
+                  </p>
+                </div>
               </div>
             </div>
 
@@ -115,12 +156,12 @@ export default function AfiliadoFormDialog({ afiliado, mode, children, open, onO
 
             {/* Link */}
             <div className="grid gap-3">
-              <Label htmlFor="url" className="text-white">
+              <Label htmlFor="productUrl" className="text-white">
                 Link do Produto
               </Label>
               <Input
-                id="url"
-                name="url"
+                id="productUrl"
+                name="productUrl"
                 type="url"
                 defaultValue={afiliado?.link || ""}
                 className="bg-gray-800 border-gray-700 text-white"
@@ -153,11 +194,6 @@ export default function AfiliadoFormDialog({ afiliado, mode, children, open, onO
                 value="true"
                 defaultChecked={afiliado?.status !== false}
                 className="w-4 h-4 text-blue-600 bg-gray-800 border-gray-700 rounded focus:ring-blue-500"
-              />
-              <input
-                type="hidden"
-                name="status"
-                value="false"
               />
               <Label htmlFor="status" className="text-white">
                 Produto ativo

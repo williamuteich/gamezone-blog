@@ -3,14 +3,33 @@ import { CreateAffiliateService } from '../../services/affiliates/CreateAffiliat
 
 export class CreateAffiliatesController {
     async handle(req: Request, res: Response) {
-        const { title, description, url, imageUrl, buttonName, status } = req.body;
+        const { title, description, productUrl, buttonName, status = 'true' } = req.body;
+
+        if (!req.file) {
+            return res.status(400).json({ error: 'Image is required for affiliate products' });
+        }
+
+        const imageUrl = req.file.filename;
 
         try {
+            const serviceData = { 
+                title, 
+                description, 
+                url: productUrl, 
+                imageUrl, 
+                buttonName, 
+                status: status === 'true' || status === true 
+            };
+            
+            console.log('Dados enviados para o service:', serviceData);
+            
             const createAffiliateService = new CreateAffiliateService();
-            const affiliate = await createAffiliateService.execute({ title, description, url, imageUrl, buttonName, status });
+            const affiliate = await createAffiliateService.execute(serviceData);
+            
             return res.json(affiliate);
-        } catch (err: any) {
-            return res.status(400).json({ error: err.message });
+        } catch (error) {
+            console.log('Erro no controller:', error.message);
+            return res.status(400).json({ error: error.message });
         }
     }
 }

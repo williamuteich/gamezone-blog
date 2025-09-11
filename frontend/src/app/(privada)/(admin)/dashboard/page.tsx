@@ -6,7 +6,8 @@ import Container from "../compoente/Containet";
 
 
 export default async function DashboardPage() {
-  const user = await requireAuth();
+  await requireAuth();
+  
   return (
     <div className="min-h-screen bg-gradient-to-br from-gray-900 to-gray-950 text-white">
       

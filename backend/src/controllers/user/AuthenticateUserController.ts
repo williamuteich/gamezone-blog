@@ -19,8 +19,8 @@ export class AuthenticateUserController {
       return res.json({
         token
       });
-    } catch (err: any) {
-      return res.status(400).json({ error: err.message });
+    } catch (error) {
+      return res.status(400).json({ error: error.message });
     }
   }
 }

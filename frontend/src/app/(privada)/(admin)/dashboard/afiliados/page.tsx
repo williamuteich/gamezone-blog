@@ -6,43 +6,29 @@ import SearchItems from "@/app/components/searchItem";
 import Paginacao from "@/app/components/paginacao";
 import { Button } from "@/components/ui/button";
 import { Plus } from "lucide-react";
+import { requireAuth } from "@/lib/auth";
+import { Afiliado } from "@/types/afiliado";
 
-// Mock data simples para visualização
-const mockAfiliados = [
-    {
-        id: "1",
-        title: "Mouse Gamer Pro",
-        description: "Mouse gamer com alta precisão e RGB customizável",
-        link: "https://example.com/mouse",
-        buttonName: "Comprar",
-        status: true,
-        createdAt: "2024-01-15T10:00:00Z"
-    },
-    {
-        id: "2",
-        title: "Headset Gaming",
-        description: "Headset com áudio surround e microfone",
-        link: "https://example.com/headset",
-        buttonName: "Ver Oferta",
-        status: true,
-        createdAt: "2024-01-14T15:30:00Z"
-    },
-    {
-        id: "3",
-        title: "Teclado Mecânico",
-        description: "Teclado mecânico com switches premium",
-        link: "https://example.com/teclado",
-        buttonName: "Conferir",
-        status: false,
-        createdAt: "2024-01-13T09:15:00Z"
+
+export default async function AfiliadosPage() {
+    const { token } = await requireAuth();
+    const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/affiliates`, {
+        headers: {
+            'Content-Type': 'application/json',
+            Authorization: `Bearer ${token}`
+        }
+    });
+
+    if(!res.ok) {
+        console.error('Error fetching affiliates:', res.status, res.statusText);
     }
-];
 
-export default function AfiliadosPage() {
-    const mockStats = {
-        totalAfiliados: mockAfiliados.length,
-        activeAfiliados: mockAfiliados.filter(a => a.status).length,
-        inactiveAfiliados: mockAfiliados.filter(a => !a.status).length
+    const afiliados = await res.json();
+
+    const produtos = {
+        totalAfiliados: afiliados.length,
+        activeAfiliados: afiliados.filter((a: Afiliado) => a.status).length,
+        inactiveAfiliados: afiliados.filter((a: Afiliado) => !a.status).length
     };
 
     return (
@@ -63,7 +49,7 @@ export default function AfiliadosPage() {
                 </div>
 
                 {/* Estatísticas */}
-                <AfiliadoStats afiliados={mockAfiliados} stats={mockStats} />
+                <AfiliadoStats afiliados={afiliados} stats={produtos} />
 
                 {/* Busca */}
                 <div className="flex flex-col sm:flex-row gap-4">
@@ -71,10 +57,10 @@ export default function AfiliadosPage() {
                 </div>
 
                 {/* Tabela de Afiliados */}
-                <AfiliadoTable afiliados={mockAfiliados} />
+                <AfiliadoTable afiliados={afiliados} />
 
                 {/* Paginação */}
-                <Paginacao data={mockAfiliados} totalRecords={mockAfiliados.length} />
+                <Paginacao data={afiliados} totalRecords={afiliados.length} />
             </div>
         </Container>
     );
