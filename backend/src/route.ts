@@ -9,18 +9,19 @@ import { DeleteUserController } from './controllers/user/DeleteUserController';
 import { isAuthenticated } from './middleware/isAuthenticated';
 
 const router = Router();
-//rota de login
-router.post('/login', new AuthenticateUserController().handle);
 
-//rotas privadas
-router.post('/users', isAuthenticated, new CreateUserController().handle);
+//rotas get
 router.get('/me', isAuthenticated, new DetailUserController().handle);
 router.get('/users', isAuthenticated, new GetAllUsersController().handle);
-router.put('/users', isAuthenticated, new PutUserController().handle);
-router.delete('/users', isAuthenticated, new DeleteUserController().handle);
 
-//rotas públicas
-//router.get('/users', new GetAllUsersController().handle);
-//router.put('/users', new PutUserController().handle);
+//rotas Post
+router.post('/login', new AuthenticateUserController().handle);
+router.post('/users', isAuthenticated, new CreateUserController().handle);
+
+//rotas put
+router.put('/users', isAuthenticated, new PutUserController().handle);
+
+//rotas delete
+router.delete('/users', isAuthenticated, new DeleteUserController().handle);
 
 export { router };

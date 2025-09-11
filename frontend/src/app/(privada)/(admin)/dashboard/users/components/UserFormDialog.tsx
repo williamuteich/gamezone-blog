@@ -1,3 +1,7 @@
+"use client"
+
+import { useEffect, useRef } from "react"
+import { useActionState } from "react"
 import { Button } from "@/components/ui/button"
 import {
   Dialog,
@@ -13,8 +17,24 @@ import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { Upload, X } from "lucide-react"
 import { UserFormDialogProps } from "@/types/user"
+import { persistUser } from "@/app/actions/persistUset"
+
 
 export default function UserFormDialog({ user, mode, children }: UserFormDialogProps) {
+  const [state, formAction] = useActionState(persistUser, null)
+  const dialogCloseRef = useRef<HTMLButtonElement>(null)
+  const formRef = useRef<HTMLFormElement>(null)
+
+  useEffect(() => {
+    if (state?.success) {
+      // Fecha o modal após sucesso
+      dialogCloseRef.current?.click()
+      
+      // Reseta o formulário
+      formRef.current?.reset()
+    }
+  }, [state])
+
   const getInitials = (name: string) => {
     return name
       .split(" ")
@@ -26,9 +46,14 @@ export default function UserFormDialog({ user, mode, children }: UserFormDialogP
 
   return (
     <Dialog>
-      <form>
-        <DialogTrigger asChild>{children}</DialogTrigger>
-        <DialogContent className="sm:max-w-[425px] bg-gray-900 border-gray-700 text-white">
+      <DialogTrigger asChild>{children}</DialogTrigger>
+      <DialogContent className="sm:max-w-[425px] bg-gray-900 border-gray-700 text-white">
+        <form ref={formRef} action={formAction}>
+          <input type="hidden" name="id" value={user?.id || ""} />
+          <input type="hidden" name="url" value="/users" />
+          <input type="hidden" name="method" value={user?.id ? "PUT" : "POST"} />
+          <input type="hidden" name="revalidate" value="/dashboard/users" />
+          
           <DialogHeader>
             <DialogTitle>
               {mode === "add" ? "Adicionar Novo Usuário" : "Editar Usuário"}
@@ -75,7 +100,7 @@ export default function UserFormDialog({ user, mode, children }: UserFormDialogP
             </div>
           </div>
 
-          <div className="grid gap-4">
+          <div className="grid gap-4 mt-4">
             <div className="grid gap-3">
               <Label htmlFor="name" className="text-white">
                 Nome
@@ -85,8 +110,10 @@ export default function UserFormDialog({ user, mode, children }: UserFormDialogP
                 name="name"
                 defaultValue={user?.name || ""}
                 className="bg-gray-800 border-gray-700 text-white"
+                required
               />
             </div>
+
             <div className="grid gap-3">
               <Label htmlFor="email" className="text-white">
                 Email
@@ -97,21 +124,24 @@ export default function UserFormDialog({ user, mode, children }: UserFormDialogP
                 type="email"
                 defaultValue={user?.email || ""}
                 className="bg-gray-800 border-gray-700 text-white"
+                required
               />
             </div>
+
             <div className="grid gap-3">
               <Label htmlFor="password" className="text-white">
-                {mode === "add"
-                  ? "Senha"
-                  : "Nova Senha (deixe vazio para manter)"}
+                {mode === "add" ? "Senha" : "Nova Senha (deixe vazio para manter)"}
               </Label>
               <Input
                 id="password"
                 name="password"
                 type="password"
                 className="bg-gray-800 border-gray-700 text-white"
+                required={mode === "add"}
+                minLength={mode === "add" ? 6 : undefined}
               />
             </div>
+
             <div className="grid gap-3">
               <Label htmlFor="role" className="text-white">
                 Função
@@ -127,6 +157,7 @@ export default function UserFormDialog({ user, mode, children }: UserFormDialogP
                 <option value="admin">Administrador</option>
               </select>
             </div>
+
             <div className="flex items-center space-x-2">
               <input
                 id="status"
@@ -139,6 +170,7 @@ export default function UserFormDialog({ user, mode, children }: UserFormDialogP
                 Usuário ativo
               </Label>
             </div>
+
             <div className="flex items-center space-x-2">
               <input
                 id="isAdmin"
@@ -153,9 +185,17 @@ export default function UserFormDialog({ user, mode, children }: UserFormDialogP
             </div>
           </div>
 
-          <DialogFooter>
+          {state?.message && (
+            <div className={`mt-4 p-3 rounded-md ${state.success ? 'bg-green-900/30 text-green-300' : 'bg-red-900/30 text-red-300'}`}>
+              {state.message}
+            </div>
+          )}
+
+          <DialogFooter className="mt-4">
             <DialogClose asChild>
               <Button
+                ref={dialogCloseRef}
+                type="button"
                 variant="outline"
                 className="bg-gray-700 cursor-pointer hover:text-white border-gray-600 text-white hover:bg-gray-600"
               >
@@ -169,8 +209,8 @@ export default function UserFormDialog({ user, mode, children }: UserFormDialogP
               {mode === "add" ? "Criar Usuário" : "Salvar Alterações"}
             </Button>
           </DialogFooter>
-        </DialogContent>
-      </form>
+        </form>
+      </DialogContent>
     </Dialog>
   )
 }
