@@ -14,7 +14,7 @@ export default async function UsersPage({ searchParams }: { searchParams: Promis
 
     const currentPage = page ? parseInt(page) : 1;
     
-    const user = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/users?${search ? `search=${search}&` : ''}${page ? `page=${page}&` : ''}${status ? `status=${status}&` : ''}${role ? `role=${role}&` : ''}limit=3`, {
+    const user = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/users?${search ? `search=${search}&` : ''}${page ? `page=${page}&` : ''}${status ? `status=${status}&` : ''}${role ? `role=${role}&` : ''}limit=10`, {
         headers: {
             'Content-Type': 'application/json',
             Authorization: `Bearer ${token}`,
@@ -28,7 +28,7 @@ export default async function UsersPage({ searchParams }: { searchParams: Promis
         currentPage: 1,
         totalPages: 1,
         totalUsers: 0,
-        limit: 3,
+        limit: 10,
         hasNext: false,
         hasPrevious: false
     };

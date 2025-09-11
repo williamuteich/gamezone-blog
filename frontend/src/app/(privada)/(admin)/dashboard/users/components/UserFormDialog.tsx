@@ -17,11 +17,11 @@ import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { Upload, X } from "lucide-react"
 import { UserFormDialogProps } from "@/types/user"
-import { persistUser } from "@/app/actions/persistUset"
+import { persistData } from "@/app/actions/persistData"
 
 
 export default function UserFormDialog({ user, mode, children, open, onOpenChange }: UserFormDialogProps) {
-  const [state, formAction] = useActionState(persistUser, null)
+  const [state, formAction] = useActionState(persistData, null)
   const dialogCloseRef = useRef<HTMLButtonElement>(null)
   const formRef = useRef<HTMLFormElement>(null)
 
@@ -160,6 +160,13 @@ export default function UserFormDialog({ user, mode, children, open, onOpenChang
                 <option value="editor">Editor</option>
                 <option value="admin">Administrador</option>
               </select>
+              <div className="text-xs text-gray-400 mt-1">
+                <div className="space-y-1">
+                  <div><span className="text-orange-400">•</span> <strong>Usuário:</strong> Acesso apenas ao blog público</div>
+                  <div><span className="text-blue-400">•</span> <strong>Editor:</strong> Pode criar e editar posts + acesso ao dashboard</div>
+                  <div><span className="text-purple-400">•</span> <strong>Administrador:</strong> Acesso total ao sistema</div>
+                </div>
+              </div>
             </div>
 
             <div className="flex items-center space-x-2">
@@ -181,24 +188,7 @@ export default function UserFormDialog({ user, mode, children, open, onOpenChang
               </Label>
             </div>
 
-            <div className="flex items-center space-x-2">
-              <input
-                id="isAdmin"
-                name="isAdmin"
-                type="checkbox"
-                value="true"
-                defaultChecked={user?.isAdmin || false}
-                className="w-4 h-4 text-blue-600 bg-gray-800 border-gray-700 rounded focus:ring-blue-500"
-              />
-              <input
-                type="hidden"
-                name="isAdmin"
-                value="false"
-              />
-              <Label htmlFor="isAdmin" className="text-white">
-                Administrador
-              </Label>
-            </div>
+
           </div>
 
           {state?.message && (

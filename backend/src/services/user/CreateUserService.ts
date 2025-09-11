@@ -33,15 +33,23 @@ export class CreateUserService {
 
     const passwordHash = await this.hashPassword(data.password);
 
+    const role = data.role || 'user';
+    const isAdmin = role === 'admin' || role === 'editor';
+
     const user = await prisma.user.create({
-      data: { ...data, password: passwordHash },
+      data: { 
+        ...data, 
+        password: passwordHash,
+        role: role,
+        isAdmin: isAdmin
+      },
     });
 
     if (!user) {
       throw new Error('User creation failed');
     }
 
-    const { password, ...userWithoutPassword } = user;
-    return userWithoutPassword;
+
+    return { message: 'User successfully created' };
   }
 }

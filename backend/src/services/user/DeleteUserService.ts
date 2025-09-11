@@ -15,7 +15,7 @@ export class DeleteUserService {
                 where: { id },
             });
 
-            return user;
+            return { message: 'User successfully deleted' };
         } catch (error: any) {
          
             if (error.code === 'P2025') {

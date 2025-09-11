@@ -3,7 +3,7 @@ import bcrypt from 'bcrypt';
 
 export interface PutUserRequest {
     id: string;
-    [key: string]: any; // permite campos dinâmicos
+    [key: string]: any; 
 }
 
 export class PutUserService {
@@ -22,9 +22,14 @@ export class PutUserService {
             Object.entries(rest).filter(([_, value]) => value !== undefined)
         );
 
-        // Se uma senha foi fornecida, fazer hash dela
         if (password && password.trim() !== '') {
             data.password = await this.hashPassword(password);
+        }
+
+        if (data.role) {
+            const isAdmin = data.role === 'admin' || data.role === 'editor';
+            data.isAdmin = isAdmin;
+            
         }
 
         const user = await prisma.user.update({
@@ -36,8 +41,7 @@ export class PutUserService {
             throw new Error("User not found");
         }
 
-        // Remover a senha do retorno
-        const { password: _, ...userWithoutPassword } = user;
-        return userWithoutPassword;
+
+        return { message: "User successfully updated" };
     }
 }

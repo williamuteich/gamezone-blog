@@ -16,7 +16,7 @@ interface PaginacaoProps {
     pageSize?: number;
 }
 
-export default function Paginacao({ data, totalRecords, pageSize = 3 }: PaginacaoProps) {
+export default function Paginacao({ data, totalRecords, pageSize = 10 }: PaginacaoProps) {
     const searchParams = useSearchParams();
     const pathname = usePathname();
     const { replace } = useRouter();

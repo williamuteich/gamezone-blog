@@ -3,13 +3,15 @@
 import { revalidatePath } from 'next/cache'
 import { requireAuth } from '@/lib/auth'
 
-export async function persistUser(
+export async function persistData(
   prevState: { success: boolean; message: any } | null,
   payload: FormData | any
 ) {
   try {
     
     let formData: FormData
+
+    console.log('persistData payload:', payload)
     
     if (payload instanceof FormData) {
       formData = payload
@@ -30,7 +32,7 @@ export async function persistUser(
     
     formData.forEach((value, key) => {
       if (!['id', 'url', 'method', 'revalidate'].includes(key)) {
-        if (key === 'status' || key === 'isAdmin') {
+        if (key === 'status') {
           if (value === 'true') {
             bodyData[key] = true
           } else if (value === 'false' && !bodyData.hasOwnProperty(key)) {

@@ -1,7 +1,7 @@
 import { Request, Response } from 'express';
 import { GetAllUsersService } from '../../services/user/GetAllUsersService';
 
-export class GetAllUsersController {
+export class GetAllUserController {
   async handle(req: Request, res: Response) {
     try {
       const getAllUsersService = new GetAllUsersService();

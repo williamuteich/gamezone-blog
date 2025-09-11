@@ -1,0 +1,35 @@
+import prisma from '../../prisma';
+
+interface AffiliateData {
+    title: string;
+    description: string;
+    url: string;
+    imageUrl?: string;
+    buttonName: string;
+    status: boolean;
+}
+
+export class CreateAffiliateService {
+    async execute(data: AffiliateData) {
+        if (!data.title || !data.description || !data.url || !data.buttonName) {
+            throw new Error('All fields are required');
+        }
+
+        const affiliate = await prisma.affiliate.create({
+            data: {
+                title: data.title,
+                description: data.description,
+                link: data.url,
+                imageUrl: data.imageUrl,
+                buttonName: data.buttonName,
+                status: data.status,
+            }
+        })
+
+        if(!affiliate) {
+            throw new Error('Affiliate creation failed');
+        }
+
+        return { message: 'Affiliate created successfully' };
+    }
+}
