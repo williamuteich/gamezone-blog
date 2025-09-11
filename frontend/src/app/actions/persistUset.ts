@@ -15,7 +15,6 @@ export async function persistUser(
       formData = payload
     } else if (prevState instanceof FormData) {
       formData = prevState as FormData
-      console.log("Parâmetros estavam trocados!")
     } else {
       return { success: false, message: 'FormData não encontrado' }
     }
@@ -28,10 +27,15 @@ export async function persistUser(
     const revalidate = formData.get('revalidate') as string
 
     const bodyData: any = {}
+    
     formData.forEach((value, key) => {
       if (!['id', 'url', 'method', 'revalidate'].includes(key)) {
         if (key === 'status' || key === 'isAdmin') {
-          bodyData[key] = value === 'on'
+          if (value === 'true') {
+            bodyData[key] = true
+          } else if (value === 'false' && !bodyData.hasOwnProperty(key)) {
+            bodyData[key] = false
+          }
         } else {
           bodyData[key] = value
         }

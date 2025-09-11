@@ -1,4 +1,5 @@
 import prisma from "../../prisma";
+import bcrypt from 'bcrypt';
 
 export interface PutUserRequest {
     id: string;
@@ -6,7 +7,13 @@ export interface PutUserRequest {
 }
 
 export class PutUserService {
-    async execute({ id, ...rest }: PutUserRequest) {
+    readonly SALT_ROUNDS = 12;
+
+    async hashPassword(password: string) {
+        return bcrypt.hash(password, this.SALT_ROUNDS);
+    }
+
+    async execute({ id, password, ...rest }: PutUserRequest) {
         if (!id) {
             throw new Error("ID is required");
         }
@@ -14,6 +21,11 @@ export class PutUserService {
         const data = Object.fromEntries(
             Object.entries(rest).filter(([_, value]) => value !== undefined)
         );
+
+        // Se uma senha foi fornecida, fazer hash dela
+        if (password && password.trim() !== '') {
+            data.password = await this.hashPassword(password);
+        }
 
         const user = await prisma.user.update({
             where: { id },
@@ -24,6 +36,8 @@ export class PutUserService {
             throw new Error("User not found");
         }
 
-        return user;
+        // Remover a senha do retorno
+        const { password: _, ...userWithoutPassword } = user;
+        return userWithoutPassword;
     }
 }

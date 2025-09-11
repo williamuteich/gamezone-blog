@@ -6,6 +6,9 @@ export interface UserRequest {
   email: string;
   password: string;
   isAdmin?: boolean;
+  role?: string;
+  status?: boolean;
+  avatar?: string;
 }
 
 export class CreateUserService {

@@ -163,8 +163,14 @@ export default function UserFormDialog({ user, mode, children }: UserFormDialogP
                 id="status"
                 name="status"
                 type="checkbox"
+                value="true"
                 defaultChecked={user?.status !== false}
                 className="w-4 h-4 text-blue-600 bg-gray-800 border-gray-700 rounded focus:ring-blue-500"
+              />
+              <input
+                type="hidden"
+                name="status"
+                value="false"
               />
               <Label htmlFor="status" className="text-white">
                 Usuário ativo
@@ -176,8 +182,14 @@ export default function UserFormDialog({ user, mode, children }: UserFormDialogP
                 id="isAdmin"
                 name="isAdmin"
                 type="checkbox"
+                value="true"
                 defaultChecked={user?.isAdmin || false}
                 className="w-4 h-4 text-blue-600 bg-gray-800 border-gray-700 rounded focus:ring-blue-500"
+              />
+              <input
+                type="hidden"
+                name="isAdmin"
+                value="false"
               />
               <Label htmlFor="isAdmin" className="text-white">
                 Administrador
