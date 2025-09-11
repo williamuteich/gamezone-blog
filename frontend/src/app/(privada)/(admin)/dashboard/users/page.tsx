@@ -2,7 +2,7 @@ import { requireAuth } from "@/lib/auth";
 import Container from "../../compoente/Containet";
 import { Search, Filter } from "lucide-react";
 import UserStats from "./components/UserStats";
-import UserCard from "./components/UserCard";
+import UserTable from "./components/UserTable";
 import UserFormDialog from "./components/UserFormDialog";
 import { User } from "@/types/user";
 
@@ -34,6 +34,9 @@ export default async function UsersPage() {
                     </UserFormDialog>
                 </div>
 
+                {/* Estatísticas */}
+                <UserStats users={users} />
+
                 {/* Filtros e busca */}
                 <div className="flex flex-col sm:flex-row gap-4">
                     <div className="relative flex-1">
@@ -50,15 +53,8 @@ export default async function UsersPage() {
                     </button>
                 </div>
 
-                {/* Cards dos usuários */}
-                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                    {users.map((user: User) => (
-                        <UserCard key={user.id} user={user} />
-                    ))}
-                </div>
-
-                {/* Stats no final */}
-                <UserStats users={users} />
+                {/* Tabela de usuários */}
+                <UserTable users={users} />
             </div>
         </Container>
     )

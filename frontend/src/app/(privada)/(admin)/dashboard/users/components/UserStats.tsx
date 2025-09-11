@@ -3,7 +3,7 @@ import { User as UserType, UserStatsProps } from "@/types/user";
 
 export default function UserStats({ users }: UserStatsProps) {
     return (
-        <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 mt-8">
+        <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
             <div className="bg-gray-800/50 backdrop-blur-sm rounded-xl p-4 border border-gray-700">
                 <div className="flex items-center gap-3">
                     <div className="w-10 h-10 bg-blue-600/20 rounded-lg flex items-center justify-center">
