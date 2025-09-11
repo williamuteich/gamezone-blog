@@ -1,6 +1,5 @@
-import { Mail, Calendar, Shield, MoreVertical } from "lucide-react";
-import UserFormDialog from "./UserFormDialog";
-import DeleteUserDialog from "./DeleteUserDialog";
+import { Mail, Calendar, Shield } from "lucide-react";
+import UserActionsDropdown from "./UserActionsDropdown";
 import { User, UserCardProps } from "@/types/user";
 
 
@@ -39,7 +38,7 @@ export default function UserCard({ user }: UserCardProps) {
         <div className="bg-gray-800/50 backdrop-blur-sm rounded-xl p-6 border border-gray-700 hover:border-gray-600 transition-colors">
             {/* Header do card */}
             <div className="flex items-start justify-between mb-4">
-                <div className="flex items-center gap-3">
+                <div className="flex items-center gap-3 flex-1">
                     {user.avatar ? (
                         <img
                             src={user.avatar}
@@ -64,9 +63,9 @@ export default function UserCard({ user }: UserCardProps) {
                         </p>
                     </div>
                 </div>
-                <button className="p-1 hover:bg-gray-700 rounded transition-colors">
-                    <MoreVertical className="h-4 w-4 text-gray-400" />
-                </button>
+                <div className="flex-shrink-0">
+                    <UserActionsDropdown user={user} />
+                </div>
             </div>
 
             {/* Informações do usuário */}
@@ -107,24 +106,6 @@ export default function UserCard({ user }: UserCardProps) {
                         <Calendar className="h-3 w-3" />
                         {formatDate(user.createdAt)}
                     </span>
-                </div>
-            </div>
-
-            <div className="flex gap-2 mt-4 pt-4 border-t border-gray-700">
-                <div className="flex-1">
-                    <UserFormDialog user={user} mode="edit">
-                        <button className="w-full px-3 cursor-pointer py-2 bg-gray-500 hover:bg-gray-600 text-white rounded-lg transition-colors text-sm font-medium">
-                            Editar
-                        </button>
-                    </UserFormDialog>
-                </div>
-
-                <div className="flex-1">
-                    <DeleteUserDialog user={user}>
-                        <button className="w-full px-3 cursor-pointer py-2 bg-red-600/80 hover:bg-red-500 text-white rounded-lg transition-colors text-sm">
-                            Excluir
-                        </button>
-                    </DeleteUserDialog>
                 </div>
             </div>
         </div>

@@ -24,7 +24,7 @@ export default function UserStats({ users }: UserStatsProps) {
                     <div>
                         <p className="text-sm text-gray-400">Usuários Ativos</p>
                         <p className="text-xl font-bold text-white">
-                            {users.length}
+                            {users.filter(u => u.status).length}
                         </p>
                     </div>
                 </div>

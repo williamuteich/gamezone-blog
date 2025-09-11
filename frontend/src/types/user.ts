@@ -17,6 +17,8 @@ export interface UserFormDialogProps {
     user?: User;
     mode: 'add' | 'edit';
     children: React.ReactNode;
+    open?: boolean;
+    onOpenChange?: (open: boolean) => void;
 }
 
 export interface UserCardProps {
@@ -26,6 +28,8 @@ export interface UserCardProps {
 export interface DeleteUserDialogProps {
     user: User;
     children: React.ReactNode;
+    open?: boolean;
+    onOpenChange?: (open: boolean) => void;
 }
 
 export interface UserStatsProps {

@@ -20,7 +20,7 @@ import { UserFormDialogProps } from "@/types/user"
 import { persistUser } from "@/app/actions/persistUset"
 
 
-export default function UserFormDialog({ user, mode, children }: UserFormDialogProps) {
+export default function UserFormDialog({ user, mode, children, open, onOpenChange }: UserFormDialogProps) {
   const [state, formAction] = useActionState(persistUser, null)
   const dialogCloseRef = useRef<HTMLButtonElement>(null)
   const formRef = useRef<HTMLFormElement>(null)
@@ -28,12 +28,16 @@ export default function UserFormDialog({ user, mode, children }: UserFormDialogP
   useEffect(() => {
     if (state?.success) {
       // Fecha o modal após sucesso
-      dialogCloseRef.current?.click()
+      if (onOpenChange) {
+        onOpenChange(false);
+      } else {
+        dialogCloseRef.current?.click();
+      }
       
       // Reseta o formulário
       formRef.current?.reset()
     }
-  }, [state])
+  }, [state, onOpenChange])
 
   const getInitials = (name: string) => {
     return name
@@ -45,7 +49,7 @@ export default function UserFormDialog({ user, mode, children }: UserFormDialogP
   }
 
   return (
-    <Dialog>
+    <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogTrigger asChild>{children}</DialogTrigger>
       <DialogContent className="sm:max-w-[425px] bg-gray-900 border-gray-700 text-white">
         <form ref={formRef} action={formAction}>

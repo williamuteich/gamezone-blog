@@ -13,9 +13,9 @@ import {
 import { User, DeleteUserDialogProps } from "@/types/user"
 import { deleteRecord } from "@/app/actions/deleteRecord"
 
-export default function DeleteUserDialog({ user, children }: DeleteUserDialogProps) {
+export default function DeleteUserDialog({ user, children, open, onOpenChange }: DeleteUserDialogProps) {
     return (
-        <AlertDialog>
+        <AlertDialog open={open} onOpenChange={onOpenChange}>
             <AlertDialogTrigger asChild>
                 {children}
             </AlertDialogTrigger>
