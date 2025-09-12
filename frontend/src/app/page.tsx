@@ -54,12 +54,38 @@ export default function Home() {
           <div className="w-full h-full bg-gradient-to-br from-slate-800/50 via-gray-800/30 to-slate-900/50"></div>
         </div>
         
-        {/* Floating Elements */}
+        {/* Floating Stars - Enhanced */}
         <div className="absolute inset-0 z-5">
-          <div className="absolute top-20 left-20 w-2 h-2 bg-blue-400/40 rounded-full"></div>
-          <div className="absolute top-40 right-32 w-1 h-1 bg-cyan-300/60 rounded-full"></div>
-          <div className="absolute bottom-32 left-1/4 w-1.5 h-1.5 bg-indigo-300/50 rounded-full"></div>
-          <div className="absolute bottom-20 right-20 w-1 h-1 bg-blue-400/70 rounded-full"></div>
+          {/* Estrelas originais melhoradas */}
+          <div className="absolute top-20 left-20 w-2 h-2 bg-white/100 rounded-full animate-pulse" style={{animationDuration: '2s'}}></div>
+          <div className="absolute top-40 right-32 w-1 h-1 bg-white/80 rounded-full animate-pulse" style={{animationDuration: '1.5s', animationDelay: '0.5s'}}></div>
+          <div className="absolute bottom-32 left-1/4 w-1.5 h-1.5 bg-white/50 rounded-full animate-pulse" style={{animationDuration: '3s', animationDelay: '1s'}}></div>
+          <div className="absolute bottom-20 right-20 w-1 h-1 bg-white/70 rounded-full animate-pulse" style={{animationDuration: '2.5s', animationDelay: '0.3s'}}></div>
+          
+          {/* Novas estrelas adicionais */}
+          <div className="absolute top-32 left-1/3 w-1 h-1 bg-white/100 rounded-full animate-pulse" style={{animationDuration: '1.8s', animationDelay: '0.7s'}}></div>
+          <div className="absolute top-16 right-1/4 w-0.5 h-0.5 bg-white/90 rounded-full animate-pulse" style={{animationDuration: '1.2s', animationDelay: '1.2s'}}></div>
+          <div className="absolute top-60 left-16 w-1.5 h-1.5 bg-white/35 rounded-full animate-pulse" style={{animationDuration: '2.8s', animationDelay: '0.2s'}}></div>
+          <div className="absolute bottom-40 right-16 w-1 h-1 bg-white/65 rounded-full animate-pulse" style={{animationDuration: '2.2s', animationDelay: '1.5s'}}></div>
+          <div className="absolute top-28 right-1/3 w-0.5 h-0.5 bg-white/85 rounded-full animate-pulse" style={{animationDuration: '1.6s', animationDelay: '0.8s'}}></div>
+          <div className="absolute bottom-60 left-1/3 w-1 h-1 bg-white/100 rounded-full animate-pulse" style={{animationDuration: '3.2s', animationDelay: '0.1s'}}></div>
+          
+          {/* Estrelas menores e mais sutis */}
+          <div className="absolute top-44 left-1/2 w-0.5 h-0.5 bg-white/30 rounded-full animate-pulse" style={{animationDuration: '4s', animationDelay: '2s'}}></div>
+          <div className="absolute bottom-16 left-1/5 w-0.5 h-0.5 bg-white/100 rounded-full animate-pulse" style={{animationDuration: '1.4s', animationDelay: '0.9s'}}></div>
+          <div className="absolute top-36 right-1/5 w-1 h-1 bg-white/55 rounded-full animate-pulse" style={{animationDuration: '2.6s', animationDelay: '1.8s'}}></div>
+          <div className="absolute bottom-28 right-1/3 w-0.5 h-0.5 bg-white/95 rounded-full animate-pulse" style={{animationDuration: '1.1s', animationDelay: '0.4s'}}></div>
+          <div className="absolute top-52 left-1/6 w-1.5 h-1.5 bg-white/25 rounded-full animate-pulse" style={{animationDuration: '3.5s', animationDelay: '1.3s'}}></div>
+          
+          {/* Estrelas grandes e brilhantes */}
+          <div className="absolute top-24 right-1/2 w-2 h-2 bg-white/100 rounded-full animate-pulse" style={{animationDuration: '2.4s', animationDelay: '0.6s'}}></div>
+          <div className="absolute bottom-44 left-2/3 w-2 h-2 bg-white/40 rounded-full animate-pulse" style={{animationDuration: '3.8s', animationDelay: '2.2s'}}></div>
+          
+          {/* Estrelas nos cantos */}
+          <div className="absolute top-12 left-12 w-0.5 h-0.5 bg-white/60 rounded-full animate-pulse" style={{animationDuration: '2.1s', animationDelay: '1.7s'}}></div>
+          <div className="absolute top-14 right-12 w-1 h-1 bg-white/45 rounded-full animate-pulse" style={{animationDuration: '1.9s', animationDelay: '0.3s'}}></div>
+          <div className="absolute bottom-12 left-10 w-0.5 h-0.5 bg-white/80 rounded-full animate-pulse" style={{animationDuration: '1.7s', animationDelay: '1.1s'}}></div>
+          <div className="absolute bottom-14 right-14 w-1 h-1 bg-white/100 rounded-full animate-pulse" style={{animationDuration: '2.9s', animationDelay: '1.9s'}}></div>
         </div>
         
         <div className="container mx-auto px-4 z-10 text-center">
