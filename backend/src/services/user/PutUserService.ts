@@ -20,7 +20,6 @@ export class PutUserService {
             throw new Error("ID is required");
         }
 
-        // Se há novo avatar, buscar o avatar antigo para removê-lo
         let oldAvatar: string | null = null;
         if (rest.avatar && rest.avatar !== 'undefined') {
             const existingUser = await prisma.user.findUnique({

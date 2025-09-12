@@ -126,6 +126,10 @@ export default function UserFormDialog({ user, mode, children, open, onOpenChang
                   onChange={handleImageChange}
                   className="bg-gray-800 border-gray-700 text-white file:bg-gray-700 file:text-white file:border-0 file:rounded file:mr-2 cursor-pointer file:cursor-pointer"
                 />
+                {/* Campo hidden para manter avatar existente quando não há novo upload */}
+                {mode === "edit" && user?.avatar && (
+                  <input type="hidden" name="avatarExistente" value={user.avatar} />
+                )}
                 <p className="text-xs text-gray-400 mt-1">
                   Formatos aceitos: JPG, PNG, GIF (opcional)
                 </p>
