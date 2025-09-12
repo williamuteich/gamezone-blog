@@ -133,7 +133,6 @@ app.use((err: Error, req: Request, res: Response, next: NextFunction) => {
   return res.status(500).json({ error: 'Erro interno do servidor' });
 });
 
-// Iniciar job de limpeza de tokens
 const tokenCleanup = new TokenCleanupService();
 tokenCleanup.startCleanupJob();
 

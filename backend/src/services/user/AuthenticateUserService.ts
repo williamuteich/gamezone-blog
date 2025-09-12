@@ -5,12 +5,46 @@ import prisma from '../../prisma';
 export interface AuthenticateRequest {
   email: string;
   password: string;
+  recaptchaToken?: string;
 }
 
 export class AuthenticateUserService {
-  async execute({ email, password }: AuthenticateRequest) {
+  private async validateRecaptcha(token: string): Promise<boolean> {
+    try {
+      const secretKey = process.env.RECAPTCHA_SECRET_KEY;
+      if (!secretKey) {
+        console.warn('RECAPTCHA_SECRET_KEY não configurada');
+        return false;
+      }
+
+      const response = await fetch('https://www.google.com/recaptcha/api/siteverify', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/x-www-form-urlencoded',
+        },
+        body: `secret=${secretKey}&response=${token}`,
+      });
+
+      const data = await response.json();
+      
+      return data.success === true;
+    } catch (error) {
+      console.error('Erro na validação do reCAPTCHA:', error);
+      return false;
+    }
+  }
+
+  async execute({ email, password, recaptchaToken }: AuthenticateRequest) {
     if (!email || !password) {
       throw new Error('Invalid email or password');
+    }
+
+    // Validar reCAPTCHA se fornecido
+    if (recaptchaToken) {
+      const isValidRecaptcha = await this.validateRecaptcha(recaptchaToken);
+      if (!isValidRecaptcha) {
+        throw new Error('Verificação reCAPTCHA inválida');
+      }
     }
 
     const user = await prisma.user.findUnique({

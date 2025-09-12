@@ -3,13 +3,17 @@ import { AuthenticateUserService } from '../../services/user/AuthenticateUserSer
 
 export class AuthenticateUserController {
   async handle(req: Request, res: Response) {
-    const { email, password } = req.body;
+    const { email, password, recaptchaToken } = req.body;
 
     try {
       const authenticateUserService = new AuthenticateUserService();
-      const { token } = await authenticateUserService.execute({ email, password });
+            const result = await authenticateUserService.execute({
+        email,
+        password,
+        recaptchaToken,
+      });
 
-      res.cookie('token', token, {
+      res.cookie('token', result.token, {
         httpOnly: true,
         secure: process.env.NODE_ENV === 'production',
         sameSite: 'strict',
@@ -19,7 +23,7 @@ export class AuthenticateUserController {
       });
 
       return res.json({
-        token
+        token: result.token
       });
     } catch (error) {
       return res.status(400).json({ error: error.message });
