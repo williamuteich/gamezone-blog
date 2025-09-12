@@ -1,5 +1,6 @@
 import { NextFunction, Request, Response } from "express";
 import jwt from "jsonwebtoken";
+import crypto from "crypto";
 import prisma from "../prisma";
 
 interface UserPayload {
@@ -26,7 +27,9 @@ export async function isUserAuthenticated(req: Request, res: Response, next: Nex
   }
 
   try {
-    const payload = jwt.verify(token, process.env.JWT_SECRET!) as UserPayload;
+    const payload = jwt.verify(token, process.env.JWT_SECRET!, {
+      algorithms: ['HS256']
+    }) as UserPayload;
 
     // Verificar se é token de usuário (não deve ter 'role')
     if ('role' in payload) {
@@ -34,9 +37,10 @@ export async function isUserAuthenticated(req: Request, res: Response, next: Nex
       return res.status(403).json({ error: "Token de equipe não permitido nesta rota" });
     }
 
-    // Verificar se token está na blacklist
+    // Verificar se token está na blacklist usando hash
+    const tokenHash = crypto.createHash('sha256').update(token).digest('hex');
     const blacklistedToken = await prisma.blacklistedToken.findUnique({
-      where: { token }
+      where: { token: tokenHash }
     });
 
     if (blacklistedToken) {

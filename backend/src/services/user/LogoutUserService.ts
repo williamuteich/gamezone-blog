@@ -1,4 +1,5 @@
 import jwt from 'jsonwebtoken';
+import crypto from 'crypto';
 import prisma from '../../prisma';
 
 export interface LogoutRequest {
@@ -23,10 +24,13 @@ export class LogoutUserService {
       // Calcular data de expiração do token
       const expiresAt = new Date(decoded.exp * 1000);
 
-      // Adicionar token à blacklist
+      // Gerar hash do token para blacklist (mais eficiente que armazenar token completo)
+      const tokenHash = crypto.createHash('sha256').update(token).digest('hex');
+
+      // Adicionar hash do token à blacklist
       await prisma.blacklistedToken.create({
         data: {
-          token,
+          token: tokenHash,
           userId: decoded.sub,
           reason: 'logout',
           expiresAt,
