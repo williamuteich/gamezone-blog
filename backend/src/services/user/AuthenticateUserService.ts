@@ -30,6 +30,8 @@ export class AuthenticateUserService {
       {
         name: user.name,
         email: user.email,
+        avatar: user.avatar,
+        role: user.role,
         isAdmin: user.isAdmin,
       },
       process.env.JWT_SECRET,

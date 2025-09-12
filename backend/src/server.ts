@@ -1,18 +1,93 @@
 import express, { Request, Response, NextFunction } from 'express';
 import cors from 'cors';
 import cookieParser from 'cookie-parser';
+import helmet from 'helmet';
+import rateLimit from 'express-rate-limit';
 import 'express-async-errors';
 import { router } from './route';
 
 const app = express();
-app.use(express.json());
 
+app.use(helmet({
+  crossOriginEmbedderPolicy: false, 
+  contentSecurityPolicy: {
+    directives: {
+      defaultSrc: ["'self'"],
+      styleSrc: ["'self'", "'unsafe-inline'"], 
+      scriptSrc: ["'self'"],
+      imgSrc: ["'self'", "data:", "https:"], 
+    },
+  },
+}));
+
+const loginLimiter = rateLimit({
+  windowMs: process.env.NODE_ENV === 'production' ? 15 * 60 * 1000 : 5 * 60 * 1000,
+  max: process.env.NODE_ENV === 'production' ? 5 : 10, 
+  message: {
+    error: process.env.NODE_ENV === 'production' 
+      ? 'Muitas tentativas de login. Tente novamente em 15 minutos.'
+      : 'Muitas tentativas de login. Tente novamente em 5 minutos.'
+  },
+  standardHeaders: true,
+  legacyHeaders: false,
+});
+
+const generalLimiter = rateLimit({
+  windowMs: 15 * 60 * 1000, // 15 minutos
+  max: 100, // Máximo 100 requests por IP
+  message: {
+    error: 'Muitos requests. Tente novamente em 15 minutos.'
+  }
+});
+
+app.use(express.json({ limit: '10mb' })); 
 app.use(cookieParser());
 
 app.use(cors({
-  origin: true, 
+  origin: function (origin, callback) {
+   
+    const allowedOrigins = [
+      'http://localhost:3000', 
+      'http://127.0.0.1:3000', 
+      'https://seublog.com',   
+    ];
+    
+    if (!origin) return callback(null, true);
+    
+    if (allowedOrigins.indexOf(origin) !== -1) {
+      callback(null, true);
+    } else {
+      callback(new Error('Não permitido pelo CORS'), false);
+    }
+  },
   credentials: true, 
+  methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'], 
+  allowedHeaders: [
+    'Origin', 
+    'X-Requested-With', 
+    'Content-Type', 
+    'Accept', 
+    'Authorization'
+  ], 
+  maxAge: 86400, 
 }))
+
+app.use('/files/users', express.static('./tmp/users', {
+  setHeaders: (res, path) => {
+    res.setHeader('Cross-Origin-Resource-Policy', 'cross-origin');
+    res.setHeader('Cache-Control', 'public, max-age=31536000'); // Cache por 1 ano
+  }
+}));
+
+app.use('/files/affiliates', express.static('./tmp/affiliates', {
+  setHeaders: (res, path) => {
+    res.setHeader('Cross-Origin-Resource-Policy', 'cross-origin');
+    res.setHeader('Cache-Control', 'public, max-age=31536000'); // Cache por 1 ano
+  }
+}));
+
+app.use('/login', loginLimiter); 
+app.use(generalLimiter); 
 
 app.use(router);
 

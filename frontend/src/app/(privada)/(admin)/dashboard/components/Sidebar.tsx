@@ -8,13 +8,18 @@ import {
     SheetTitle,
     SheetTrigger,
 } from "@/components/ui/sheet"
-import { Menu, Home, Users, FileText, Settings, BarChart3, Package, FolderTree, Tag, ChevronDown, ChevronRight, User, Image, Palette, Mail, Shield, Database, Globe, Bell } from "lucide-react"
+import { Menu, Home, Users, FileText, Settings, BarChart3, Package, FolderTree, Tag, ChevronDown, ChevronRight, User, Image, Palette, Mail, Shield, Database, Globe, Bell, UserCircle } from "lucide-react"
 import Link from "next/link"
 import { usePathname } from "next/navigation"
 import { useState, useEffect } from "react"
 import ButtonLogout from "../../compoente/ButtonLogout"
+import { useSession } from "@/app/components/sessionProvider"
 
 export default function Sidebar() {
+    const { user } = useSession();
+
+    console.log("recebendo dados do suuario no sidebar:", user);
+    
     const pathname = usePathname();
     const [isProductsOpen, setIsProductsOpen] = useState(false);
     const [isSettingsOpen, setIsSettingsOpen] = useState(false);
@@ -43,13 +48,10 @@ export default function Sidebar() {
         { icon: Bell, label: "Integrações", href: "/dashboard/settings/integrations" },
     ]
 
-    // Verificar se estamos em uma página de produtos para manter o dropdown aberto
     const isInProductsSection = productItems.some(item => pathname.startsWith(item.href));
     
-    // Verificar se estamos em uma página de configurações para manter o dropdown aberto
     const isInSettingsSection = settingsItems.some(item => pathname.startsWith(item.href));
 
-    // Abrir automaticamente os dropdowns quando estiver nas respectivas seções
     useEffect(() => {
         if (isInProductsSection) {
             setIsProductsOpen(true);
@@ -155,6 +157,46 @@ export default function Sidebar() {
                     </div>
 
                     <div className="border-t border-gray-700 mt-6 pt-4">
+                        {/* Seção do usuário logado */}
+                        {user && (
+                            <div className="mb-4 p-3 bg-gray-800 rounded-lg border border-gray-700">
+                                <div className="flex items-center gap-3">
+                                    <div className="w-10 h-10 bg-blue-600 rounded-full flex items-center justify-center overflow-hidden">
+                                        {user.avatar ? (
+                                            <img 
+                                                src={`${process.env.NEXT_PUBLIC_API_URL}/files/users/${user.avatar}`} 
+                                                alt={user.name}
+                                                className="w-full h-full object-cover"
+                                            />
+                                        ) : (
+                                            <UserCircle className="w-6 h-6 text-white" />
+                                        )}
+                                    </div>
+                                    <div className="flex-1 min-w-0">
+                                        <h4 className="text-white text-sm font-medium truncate">
+                                            {user.name}
+                                        </h4>
+                                        <p className="text-gray-400 text-xs truncate">
+                                            {user.email}
+                                        </p>
+                                        <div className="flex gap-1 mt-1">
+                                            <span className={`inline-block px-2 py-1 text-xs rounded-full ${
+                                                user.role === 'admin' ? 'bg-red-600 text-white' :
+                                                user.role === 'editor' ? 'bg-blue-600 text-white' :
+                                                user.role === 'moderator' ? 'bg-yellow-600 text-white' :
+                                                user.isAdmin ? 'bg-green-600 text-white' : 'bg-gray-600 text-white'
+                                            }`}>
+                                                {user.role ? 
+                                                    user.role.charAt(0).toUpperCase() + user.role.slice(1) : 
+                                                    (user.isAdmin ? 'Admin' : 'User')
+                                                }
+                                            </span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        )}
+                        
                         <ButtonLogout/>
                     </div>
                 </nav>

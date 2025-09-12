@@ -2,10 +2,12 @@
 
 import { useState } from 'react'
 import { useRouter } from 'next/navigation'
+import { useSession } from '@/app/components/sessionProvider'
 
 export default function LoginPage() {
     const [error, setError] = useState<string | null>(null)
     const [isLoading, setIsLoading] = useState(false)
+    const { refreshSession } = useSession()
     const router = useRouter()
 
     async function handleSubmit(formData: FormData) {
@@ -34,7 +36,9 @@ export default function LoginPage() {
                 return
             }
 
-            // aqui o cookie já foi salvo automaticamente pelo navegador
+            // Cookie foi salvo automaticamente, agora atualiza a sessão
+            await refreshSession();
+            
             router.push('/dashboard')
         } catch (err) {
             console.error('Unexpected error:', err)

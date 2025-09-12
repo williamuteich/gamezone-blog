@@ -41,8 +41,4 @@ router.put('/affiliates', isAuthenticated, uploadAffiliates.single('image'), new
 router.delete('/users', isAuthenticated, new DeleteUserController().handle);
 router.delete('/affiliates', isAuthenticated, new DeleteAffiliateController().handle);
 
-// Rota para servir arquivos estáticos (imagens)
-router.use('/files/users', express.static('./tmp/users'));
-router.use('/files/affiliates', express.static('./tmp/affiliates'));
-
 export { router };

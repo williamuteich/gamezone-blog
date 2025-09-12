@@ -3,7 +3,6 @@ import multer from 'multer'
 import { extname, resolve, dirname } from 'path';
 import { fileURLToPath } from 'url';
 
-// Obter __dirname em ES modules
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
 
@@ -18,7 +17,29 @@ export default {
 
                     return callback(null, fileName);
                 }
-            })
+            }),
+            limits: {
+                fileSize: 10 * 1024 * 1024, // 10MB máximo por arquivo
+                files: 1
+            },
+            fileFilter: (request: any, file: any, callback: any) => {
+                const allowedMimeTypes = [
+                    'image/jpeg',
+                    'image/jpg', 
+                    'image/png',
+                    'image/gif',
+                    'image/webp'
+                ];
+
+                const allowedExtensions = ['.jpg', '.jpeg', '.png', '.gif', '.webp'];
+                const fileExtension = extname(file.originalname).toLowerCase();
+
+                if (allowedMimeTypes.includes(file.mimetype) && allowedExtensions.includes(fileExtension)) {
+                    return callback(null, true);
+                } else {
+                    return callback(new Error('Tipo de arquivo não permitido. Use apenas: JPG, JPEG, PNG, GIF, WEBP'), false);
+                }
+            }
         }
     }
 }
