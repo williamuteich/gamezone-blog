@@ -1,29 +1,32 @@
 "use client";
 
 import { LogOut } from "lucide-react";
-import { deleteSession } from "@/app/actions/logout";
-import { useSession } from "@/app/components/sessionProvider";
-import { useRouter } from "next/navigation";
+import { useAuth } from "@/lib/useAuth";
+import { useState } from "react";
 
 export default function ButtonLogout() {
-    const { setUser } = useSession();
-    const router = useRouter();
+    const { logoutTeam } = useAuth();
+    const [isLoading, setIsLoading] = useState(false);
     
     const handleLogout = async () => {
-        // Limpa a sessão local
-        setUser(null);
-        
-        // Deleta o cookie do servidor
-        await deleteSession();
-        
-        // Redireciona para o login
-        router.push('/login');
+        setIsLoading(true);
+        try {
+            await logoutTeam();
+        } catch (error) {
+            console.error('Erro no logout:', error);
+        } finally {
+            setIsLoading(false);
+        }
     };
     
     return (
-        <button onClick={handleLogout} className="flex cursor-pointer items-center gap-3 px-3 py-3 rounded-lg text-gray-300 hover:bg-red-900/50 hover:text-red-400 transition-colors w-full">
-            <LogOut className="h-5 w-5" />
-            Logout
+        <button 
+            onClick={handleLogout} 
+            disabled={isLoading}
+            className="flex cursor-pointer items-center gap-3 px-3 py-3 rounded-lg text-gray-300 hover:bg-red-900/50 hover:text-red-400 transition-colors w-full disabled:opacity-50 disabled:cursor-not-allowed"
+        >
+            <LogOut className={`h-5 w-5 ${isLoading ? 'animate-spin' : ''}`} />
+            {isLoading ? 'Saindo...' : 'Logout'}
         </button>
     )
 }

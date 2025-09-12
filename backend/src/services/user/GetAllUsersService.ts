@@ -6,11 +6,11 @@ export class GetAllUsersService {
     let search = null;
     let page = 1;
     let limit = 10; 
-    let role = null;
+    let status = null;
     
     if (req) {
       search = req.query.search as string;
-      role = req.query.role as string;
+      status = req.query.status as string;
       const pageParam = req.query.page as string;
       const limitParam = req.query.limit as string;
       
@@ -33,9 +33,9 @@ export class GetAllUsersService {
       ];
     }
     
-    // Adicionar filtro de role se existir
-    if (role) {
-      whereClause.role = role;
+    // Adicionar filtro de status se existir
+    if (status) {
+      whereClause.status = status === 'true';
     }
 
     // Calcular offset para paginação
@@ -63,9 +63,9 @@ export class GetAllUsersService {
         status: true
       }
     });
-    const totalAdmins = await prisma.user.count({
+    const totalInactiveUsers = await prisma.user.count({
       where: {
-        isAdmin: true
+        status: false
       }
     });
 
@@ -86,7 +86,7 @@ export class GetAllUsersService {
       stats: {
         totalUsers: totalAllUsers,
         activeUsers: totalActiveUsers,
-        adminUsers: totalAdmins
+        inactiveUsers: totalInactiveUsers
       }
     };
   }

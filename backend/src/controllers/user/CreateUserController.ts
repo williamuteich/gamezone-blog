@@ -3,7 +3,7 @@ import { CreateUserService } from '../../services/user/CreateUserService';
 
 export class CreateUserController {
   async handle(req: Request, res: Response) {
-    const { name, email, password, isAdmin, role, status } = req.body;
+    const { name, email, password, status } = req.body;
     
     const avatar = req.file ? req.file.filename : req.body.avatar || null;
 
@@ -13,8 +13,6 @@ export class CreateUserController {
         name, 
         email, 
         password, 
-        isAdmin: isAdmin === 'true' || isAdmin === true, 
-        role, 
         status: status === 'true' || status === true, 
         avatar 
       });

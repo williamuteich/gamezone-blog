@@ -17,7 +17,8 @@ export class DetailUserService {
       id: true,
       name: true,
       email: true,
-      isAdmin: true,
+      status: true,
+      avatar: true,
       createdAt: true,
       updatedAt: true,
     }

@@ -1,5 +1,6 @@
 import { NextFunction, Request, Response } from "express";
 import jwt from "jsonwebtoken";
+import prisma from "../prisma";
 
 interface UserPayload {
   sub: string;
@@ -11,7 +12,7 @@ interface UserPayload {
   // Note: NÃO deve ter 'role' - isso é exclusivo de Team
 }
 
-export function isUserAuthenticated(req: Request, res: Response, next: NextFunction) {
+export async function isUserAuthenticated(req: Request, res: Response, next: NextFunction) {
   // Middleware para autenticar APENAS usuários normais (sem role)
   // Rejeita tokens de Team e verifica status ativo
   let token = req.headers.authorization?.split(" ")[1];
@@ -31,6 +32,16 @@ export function isUserAuthenticated(req: Request, res: Response, next: NextFunct
     if ('role' in payload) {
       res.clearCookie("token");
       return res.status(403).json({ error: "Token de equipe não permitido nesta rota" });
+    }
+
+    // Verificar se token está na blacklist
+    const blacklistedToken = await prisma.blacklistedToken.findUnique({
+      where: { token }
+    });
+
+    if (blacklistedToken) {
+      res.clearCookie("token");
+      return res.status(401).json({ error: "Token invalidado" });
     }
 
     // Verificar se usuário está ativo

@@ -7,7 +7,7 @@ interface UserTableProps {
 }
 
 export default function UserTable({ users }: UserTableProps) {
-  // Verificar se users é um array válido
+
   if (!Array.isArray(users)) {
     return (
       <div className="bg-gray-800/50 backdrop-blur-sm rounded-xl border border-gray-700 p-8 text-center">
@@ -24,7 +24,6 @@ export default function UserTable({ users }: UserTableProps) {
     );
   }
 
-  // Função para pegar as iniciais do nome
   const getInitials = (name: string) => {
     return name
       .split(' ')
@@ -34,7 +33,6 @@ export default function UserTable({ users }: UserTableProps) {
       .slice(0, 2);
   };
 
-  // Função para formatar a data
   const formatDate = (dateString: string) => {
     const date = new Date(dateString);
     return date.toLocaleDateString('pt-BR', {
@@ -42,30 +40,6 @@ export default function UserTable({ users }: UserTableProps) {
       month: '2-digit',
       year: 'numeric'
     });
-  };
-
-  // Função para formatar o nome da role
-  const formatRole = (role: string) => {
-    const roleMap: { [key: string]: string } = {
-      'user': 'Usuário',
-      'editor': 'Editor',
-      'admin': 'Administrador'
-    };
-    return roleMap[role.toLowerCase()] || role;
-  };
-
-  // Função para obter ícone e cor da role
-  const getRoleIcon = (user: User) => {
-    // Simplificar a lógica - usar apenas o campo role
-    const userRole = user.role?.toLowerCase() || 'user';
-    
-    if (userRole === 'admin') {
-      return { icon: Crown, color: 'text-purple-400 bg-purple-900/30 border border-purple-500/20' };
-    } else if (userRole === 'editor') {
-      return { icon: Edit, color: 'text-blue-400 bg-blue-900/30 border border-blue-500/20' };
-    } else {
-      return { icon: UserIcon, color: 'text-orange-400 bg-orange-900/30 border border-orange-500/20' };
-    }
   };
 
   return (
@@ -76,7 +50,7 @@ export default function UserTable({ users }: UserTableProps) {
             <tr className="border-b border-gray-700">
               <th className="text-left p-4 text-sm font-medium text-gray-400">Usuário</th>
               <th className="text-left p-4 text-sm font-medium text-gray-400">Email</th>
-              <th className="text-left p-4 text-sm font-medium text-gray-400">Função</th>
+             
               <th className="text-left p-4 text-sm font-medium text-gray-400">Status</th>
               <th className="text-left p-4 text-sm font-medium text-gray-400">Posts</th>
               <th className="text-left p-4 text-sm font-medium text-gray-400">Criado em</th>
@@ -85,9 +59,7 @@ export default function UserTable({ users }: UserTableProps) {
           </thead>
           <tbody>
             {users.map((user, index) => {
-              const roleStyle = getRoleIcon(user);
-              const RoleIcon = roleStyle.icon;
-              
+      
               return (
                 <tr 
                   key={user.id} 
@@ -126,12 +98,7 @@ export default function UserTable({ users }: UserTableProps) {
                   </td>
 
                   {/* Função */}
-                  <td className="p-4">
-                    <div className={`inline-flex items-center gap-2 px-3 py-1 rounded-full text-xs font-medium ${roleStyle.color}`}>
-                      <RoleIcon className="h-3 w-3" />
-                      {formatRole(user.role)}
-                    </div>
-                  </td>
+     
 
                   {/* Status */}
                   <td className="p-4">

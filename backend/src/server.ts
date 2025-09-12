@@ -5,6 +5,7 @@ import helmet from 'helmet';
 import rateLimit from 'express-rate-limit';
 import 'express-async-errors';
 import { router } from './route';
+import { TokenCleanupService } from './services/TokenCleanupService';
 
 const app = express();
 
@@ -131,5 +132,9 @@ app.use((err: Error, req: Request, res: Response, next: NextFunction) => {
   }
   return res.status(500).json({ error: 'Erro interno do servidor' });
 });
+
+// Iniciar job de limpeza de tokens
+const tokenCleanup = new TokenCleanupService();
+tokenCleanup.startCleanupJob();
 
 app.listen(process.env.PORT, () => console.log('Servidor online!'));

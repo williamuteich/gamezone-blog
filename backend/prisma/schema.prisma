@@ -60,3 +60,17 @@ model Affiliate {
 
   @@map("affiliates")
 }
+
+model BlacklistedToken {
+  id        String   @id @default(cuid())
+  token     String   @unique
+  userId    String?  // Para tokens de usuário
+  teamId    String?  // Para tokens de equipe
+  reason    String   @default("logout") // logout, security, admin_revoke
+  expiresAt DateTime // Quando o token expiraria naturalmente
+  createdAt DateTime @default(now())
+
+  @@map("blacklisted_tokens")
+  @@index([token])
+  @@index([expiresAt])
+}

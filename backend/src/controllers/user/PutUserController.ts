@@ -4,7 +4,7 @@ import { PutUserService } from '../../services/user/PutUserService';
 export class PutUserController {
     async handle(req: Request, res: Response) {
         
-        const { id, name, email, password, isAdmin, role, status, avatarExistente } = req.body;
+        const { id, name, email, password, status, avatarExistente } = req.body;
         
         const avatar = (req.file && req.file.size > 0) ? req.file.filename : (avatarExistente || req.body.avatar);
         
@@ -15,8 +15,6 @@ export class PutUserController {
                 name, 
                 email, 
                 password, 
-                isAdmin: isAdmin === 'true' || isAdmin === true, 
-                role, 
                 status: status === 'true' || status === true, 
                 avatar 
             });
