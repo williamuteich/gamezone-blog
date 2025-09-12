@@ -4,32 +4,64 @@ import AfiliadoTable from "./components/AfiliadoTable";
 import AfiliadoFormDialog from "./components/AfiliadoFormDialog";
 import SearchItems from "@/app/components/searchItem";
 import Paginacao from "@/app/components/paginacao";
+import { FiltroAfiliados } from "./components/FiltroAfiliados";
 import { Button } from "@/components/ui/button";
 import { Plus } from "lucide-react";
 import { requireAuth } from "@/lib/auth";
 import { Afiliado } from "@/types/afiliado";
 
+export default async function AfiliadosPage({ searchParams }: { searchParams: Promise<{ search: string, page: string, status: string }> }) {
+    const { search, page, status } = await searchParams;
 
-export default async function AfiliadosPage() {
     const { token } = await requireAuth();
-    const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/affiliates`, {
+
+    const currentPage = page ? parseInt(page) : 1;
+
+    const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/affiliates?${search ? `search=${search}&` : ''}${page ? `page=${page}&` : ''}${status ? `status=${status}&` : ''}limit=10`, {
         headers: {
             'Content-Type': 'application/json',
             Authorization: `Bearer ${token}`
-        }
+        },
+        cache: 'no-store',
+        next: { revalidate: 0 }
     });
 
-    if(!res.ok) {
-        console.error('Error fetching affiliates:', res.status, res.statusText);
-    }
-
-    const afiliados = await res.json();
-
-    const produtos = {
-        totalAfiliados: afiliados.length,
-        activeAfiliados: afiliados.filter((a: Afiliado) => a.status).length,
-        inactiveAfiliados: afiliados.filter((a: Afiliado) => !a.status).length
+    let afiliados = [];
+    let pagination = {
+        currentPage: 1,
+        totalPages: 1,
+        totalAffiliates: 0,
+        limit: 10,
+        hasNext: false,
+        hasPrevious: false
     };
+    let stats = {
+        totalAfiliados: 0,
+        activeAfiliados: 0,
+        inactiveAfiliados: 0
+    };
+
+    if (!res.ok) {
+        console.error('Error fetching affiliates:', res.status, res.statusText);
+    } else {
+        const response = await res.json();
+
+        if (response && typeof response === 'object') {
+            if (response.affiliates && Array.isArray(response.affiliates)) {
+                afiliados = response.affiliates;
+                pagination = response.pagination || pagination;
+                stats = response.stats || stats;
+            }
+            else if (Array.isArray(response)) {
+                afiliados = response;
+                stats = {
+                    totalAfiliados: response.length,
+                    activeAfiliados: response.filter((a: Afiliado) => a.status).length,
+                    inactiveAfiliados: response.filter((a: Afiliado) => !a.status).length
+                };
+            }
+        }
+    }
 
     return (
         <Container>
@@ -49,18 +81,19 @@ export default async function AfiliadosPage() {
                 </div>
 
                 {/* Estatísticas */}
-                <AfiliadoStats afiliados={afiliados} stats={produtos} />
+                <AfiliadoStats afiliados={afiliados} stats={stats} />
 
-                {/* Busca */}
+                {/* Filtros e busca */}
                 <div className="flex flex-col sm:flex-row gap-4">
                     <SearchItems />
+                    <FiltroAfiliados />
                 </div>
 
                 {/* Tabela de Afiliados */}
-                <AfiliadoTable afiliados={afiliados} />
+                <AfiliadoTable key={`affiliates-table-${currentPage}-${afiliados.length}`} afiliados={afiliados} />
 
                 {/* Paginação */}
-                <Paginacao data={afiliados} totalRecords={afiliados.length} />
+                <Paginacao data={afiliados} totalRecords={pagination.totalAffiliates || stats.totalAfiliados} />
             </div>
         </Container>
     );

@@ -4,10 +4,17 @@ import { GetAllAffiliateService } from '../../services/affiliates/GetAllAffiliat
 export class GetAllAffiliateController {
   async handle(req: Request, res: Response) {
     try {
-      const getAllAffiliateService = new GetAllAffiliateService();
-      const affiliates = await getAllAffiliateService.execute();
+      const { search, page, limit, status } = req.query;
 
-      return res.json(affiliates);
+      const getAllAffiliateService = new GetAllAffiliateService();
+      const result = await getAllAffiliateService.execute({
+        search: search as string,
+        page: page ? parseInt(page as string) : 1,
+        limit: limit ? parseInt(limit as string) : 10,
+        status: status as string
+      });
+
+      return res.json(result);
     } catch (err: any) {
       return res.status(400).json({ error: err.message });
     }
