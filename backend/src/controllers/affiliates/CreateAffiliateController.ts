@@ -21,8 +21,6 @@ export class CreateAffiliatesController {
                 status: status === 'true' || status === true 
             };
             
-            console.log('Dados enviados para o service:', serviceData);
-            
             const createAffiliateService = new CreateAffiliateService();
             const affiliate = await createAffiliateService.execute(serviceData);
             

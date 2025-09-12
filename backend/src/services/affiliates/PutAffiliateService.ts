@@ -1,4 +1,6 @@
 import prisma from "../../prisma";
+import fs from 'fs';
+import path from 'path';
 
 interface AffiliateData {
   id: string;
@@ -18,6 +20,16 @@ export class PutAffiliateService {
 
     const { id, url, ...rest } = data;
     
+    // Se há nova imagem, buscar a imagem antiga para removê-la
+    let oldImage: string | null = null;
+    if (rest.imageUrl && rest.imageUrl !== 'undefined') {
+      const existingAffiliate = await prisma.affiliate.findUnique({
+        where: { id },
+        select: { imageUrl: true }
+      });
+      oldImage = existingAffiliate?.imageUrl || null;
+    }
+    
     // Mapear url para link (nome do campo no banco)
     const mappedData = {
       ...rest,
@@ -25,7 +37,7 @@ export class PutAffiliateService {
     };
     
     const filteredData = Object.fromEntries(
-      Object.entries(mappedData).filter(([_, value]) => value !== undefined)
+      Object.entries(mappedData).filter(([_, value]) => value !== undefined && value !== 'undefined')
     );
 
     const findAffiliate = await prisma.affiliate.findFirst({
@@ -40,6 +52,15 @@ export class PutAffiliateService {
       where: { id },
       data: filteredData
     });
+
+    // Remover imagem antiga se uma nova foi enviada
+    if (oldImage && filteredData.imageUrl && oldImage !== filteredData.imageUrl) {
+      const oldImagePath = path.join('./tmp/affiliates', oldImage);
+      if (fs.existsSync(oldImagePath)) {
+        fs.unlinkSync(oldImagePath);
+        console.log(`Imagem antiga do afiliado removida: ${oldImagePath}`);
+      }
+    }
 
     return { message: "Affiliate successfully updated" };
   }

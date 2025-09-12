@@ -11,7 +11,6 @@ interface AffiliateData {
 
 export class CreateAffiliateService {
     async execute(data: AffiliateData) {
-        console.log('Service recebeu dados:', data);
         
         if (!data.title || !data.description || !data.url || !data.buttonName) {
             throw new Error('All fields are required');

@@ -4,7 +4,6 @@ import { DeleteAffiliateService } from "../../services/affiliates/DeleteAffiliat
 export class DeleteAffiliateController {
     async handle(req: Request, res: Response) {
         const { id } = req.body;
-        console.log(id)
         const deleteAffiliateService = new DeleteAffiliateService();
         try {
             const affiliate = await deleteAffiliateService.execute( id );

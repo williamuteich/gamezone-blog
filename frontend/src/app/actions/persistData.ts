@@ -33,35 +33,36 @@ export async function persistData(
     // Criar FormData limpo para upload de arquivo
     const cleanFormData = new FormData()
     
-    // Se não há status no FormData, definir como false
-    let hasStatus = false
+    // Verificar se checkbox status está marcado (checkboxes desmarcados não enviam valor)
+    const statusValue = formData.get('status') === 'true'
     
     formData.forEach((value, key) => {
-      if (key === 'status') hasStatus = true
       if (!['url', 'method', 'revalidate'].includes(key)) {
-        if (value instanceof File && value.size > 0) {
-          hasFile = true
-          cleanFormData.append(key, value)
+        if (value instanceof File) {
+          if (value.size > 0) {
+            hasFile = true
+            cleanFormData.append(key, value)
+          }
+          // Se é arquivo mas tem size 0, não adicionar ao cleanFormData
         } else if (key === 'status') {
-          const statusValue = value === 'true'
           bodyData[key] = statusValue
           cleanFormData.append(key, statusValue.toString())
-        } else if (key !== 'imageUrl' || !hasFile) { // Não enviar imageUrl se há arquivo
+        } else {
           bodyData[key] = value
           cleanFormData.append(key, value as string)
         }
       }
     })
 
+    // Sempre definir status (true se checkbox marcado, false caso contrário)
+    if (!bodyData.hasOwnProperty('status')) {
+      bodyData.status = statusValue
+      cleanFormData.append('status', statusValue.toString())
+    }
+
     if (id) {
       bodyData.id = id
       cleanFormData.append('id', id)
-    }
-    
-    // Se não há status, definir como false
-    if (!hasStatus) {
-      bodyData.status = false
-      cleanFormData.append('status', 'false')
     }
 
     // Se há arquivo, enviar FormData; senão, enviar JSON
@@ -86,10 +87,6 @@ export async function persistData(
     }
 
     const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}${url}`, requestInit)
-
-    console.log("recebendo resposta do fetch", res)
-
-    console.log("recebendo dados enviados", bodyData)
 
     if (!res.ok) {
       const error = await res.json().catch(() => ({}))

@@ -1,6 +1,6 @@
 "use client"
 
-import { useEffect, useRef } from "react"
+import { useEffect, useRef, useState } from "react"
 import { useActionState } from "react"
 import { Button } from "@/components/ui/button"
 import {
@@ -22,8 +22,18 @@ import { persistData } from "@/app/actions/persistData"
 
 export default function UserFormDialog({ user, mode, children, open, onOpenChange }: UserFormDialogProps) {
   const [state, formAction] = useActionState(persistData, null)
+  const [imagePreview, setImagePreview] = useState<string | null>(null)
   const dialogCloseRef = useRef<HTMLButtonElement>(null)
   const formRef = useRef<HTMLFormElement>(null)
+
+  // Carregar avatar existente quando for edição
+  useEffect(() => {
+    if (mode === "edit" && user?.avatar) {
+      setImagePreview(`${process.env.NEXT_PUBLIC_API_URL}/files/users/${user.avatar}`)
+    } else {
+      setImagePreview(null)
+    }
+  }, [user, mode])
 
   useEffect(() => {
     if (state?.success) {
@@ -36,8 +46,22 @@ export default function UserFormDialog({ user, mode, children, open, onOpenChang
       
       // Reseta o formulário
       formRef.current?.reset()
+      setImagePreview(null)
     }
   }, [state, onOpenChange])
+
+  const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0]
+    if (file) {
+      const reader = new FileReader()
+      reader.onloadend = () => {
+        setImagePreview(reader.result as string)
+      }
+      reader.readAsDataURL(file)
+    } else {
+      setImagePreview(null)
+    }
+  }
 
   const getInitials = (name: string) => {
     return name
@@ -57,6 +81,10 @@ export default function UserFormDialog({ user, mode, children, open, onOpenChang
           <input type="hidden" name="url" value="/users" />
           <input type="hidden" name="method" value={user?.id ? "PUT" : "POST"} />
           <input type="hidden" name="revalidate" value="/dashboard/users" />
+          {/* Avatar existente para edição */}
+          {mode === "edit" && user?.avatar && (
+            <input type="hidden" name="avatar" value={user.avatar} />
+          )}
           
           <DialogHeader>
             <DialogTitle>
@@ -69,38 +97,39 @@ export default function UserFormDialog({ user, mode, children, open, onOpenChang
             </DialogDescription>
           </DialogHeader>
 
-          <div className="flex items-center gap-4 p-4 bg-gray-800/50 rounded-lg border border-gray-700">
-            <div className="relative">
-              {user?.imageUrl ? (
-                <div className="relative">
-                  <img
-                    src={user.imageUrl}
-                    alt="Preview"
-                    className="w-16 h-16 rounded-full object-cover border-2 border-gray-600"
-                  />
-                  <div className="absolute -top-2 -right-2 w-6 h-6 bg-red-600 rounded-full flex items-center justify-center">
-                    <X className="w-3 h-3 text-white" />
-                  </div>
+          <div className="grid gap-3">
+            <Label htmlFor="avatar" className="text-white">
+              Avatar do Usuário
+            </Label>
+            <div className="flex items-center gap-4 p-4 bg-gray-800/50 rounded-lg border border-gray-700">
+              <div className="relative">
+                <div className="w-16 h-16 rounded-full border-2 border-gray-600 overflow-hidden">
+                  {imagePreview ? (
+                    <img 
+                      src={imagePreview} 
+                      alt="Preview" 
+                      className="w-full h-full object-cover"
+                    />
+                  ) : (
+                    <div className="w-full h-full bg-gradient-to-br from-blue-500 to-purple-600 flex items-center justify-center text-white font-semibold">
+                      {user?.name ? getInitials(user.name) : "??"}
+                    </div>
+                  )}
                 </div>
-              ) : (
-                <div className="w-16 h-16 rounded-full bg-gradient-to-br from-blue-500 to-purple-600 flex items-center justify-center text-white font-semibold border-2 border-gray-600">
-                  {user?.name ? getInitials(user.name) : "??"}
-                </div>
-              )}
-            </div>
-
-            <div className="flex-1">
-              <Button
-                type="button"
-                variant="outline"
-                className="w-full cursor-pointer bg-gray-700 border-gray-600 text-white hover:bg-gray-600 hover:text-white"
-              >
-                <Upload className="w-4 h-4 mr-2" />
-                {user?.imageUrl ? "Alterar Imagem" : "Adicionar Imagem"}
-              </Button>
-              <p className="text-xs text-gray-400 mt-1">
-                Clique para selecionar uma nova imagem
-              </p>
+              </div>
+              <div className="flex-1">
+                <Input
+                  id="avatar"
+                  name="avatar"
+                  type="file"
+                  accept="image/*"
+                  onChange={handleImageChange}
+                  className="bg-gray-800 border-gray-700 text-white file:bg-gray-700 file:text-white file:border-0 file:rounded file:mr-2 cursor-pointer file:cursor-pointer"
+                />
+                <p className="text-xs text-gray-400 mt-1">
+                  Formatos aceitos: JPG, PNG, GIF (opcional)
+                </p>
+              </div>
             </div>
           </div>
 
@@ -178,11 +207,6 @@ export default function UserFormDialog({ user, mode, children, open, onOpenChang
                 defaultChecked={user?.status !== false}
                 className="w-4 h-4 text-blue-600 bg-gray-800 border-gray-700 rounded focus:ring-blue-500"
               />
-              <input
-                type="hidden"
-                name="status"
-                value="false"
-              />
               <Label htmlFor="status" className="text-white">
                 Usuário ativo
               </Label>
@@ -191,8 +215,8 @@ export default function UserFormDialog({ user, mode, children, open, onOpenChang
 
           </div>
 
-          {state?.message && (
-            <div className={`mt-4 p-3 rounded-md ${state.success ? 'bg-green-900/30 text-green-300' : 'bg-red-900/30 text-red-300'}`}>
+          {state?.message && !state.success && (
+            <div className="mt-4 p-3 rounded-md bg-red-900/30 text-red-300">
               {state.message}
             </div>
           )}

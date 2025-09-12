@@ -98,21 +98,18 @@ export default function UserTable({ users }: UserTableProps) {
                   {/* Usuário */}
                   <td className="p-4">
                     <div className="flex items-center gap-3">
-                      {user.avatar ? (
-                        <img
-                          src={user.avatar}
-                          alt={user.name}
-                          className="w-10 h-10 rounded-full object-cover"
-                          onError={(e) => {
-                            e.currentTarget.style.display = 'none';
-                            e.currentTarget.nextElementSibling?.classList.remove('hidden');
-                          }}
-                        />
-                      ) : null}
-                      <div 
-                        className={`w-10 h-10 rounded-full bg-gradient-to-br from-blue-500 to-purple-600 flex items-center justify-center text-white font-semibold text-xs ${user.avatar ? 'hidden' : ''}`}
-                      >
-                        {getInitials(user.name)}
+                      <div className="w-10 h-10 rounded-full border-2 border-gray-600 overflow-hidden">
+                        {user.avatar ? (
+                          <img
+                            src={`${process.env.NEXT_PUBLIC_API_URL}/files/users/${user.avatar}`}
+                            alt={user.name}
+                            className="w-full h-full object-cover"
+                          />
+                        ) : (
+                          <div className="w-full h-full bg-gradient-to-br from-blue-500 to-purple-600 flex items-center justify-center text-white font-semibold text-xs">
+                            {getInitials(user.name)}
+                          </div>
+                        )}
                       </div>
                       <div>
                         <p className="font-medium text-white">{user.name}</p>

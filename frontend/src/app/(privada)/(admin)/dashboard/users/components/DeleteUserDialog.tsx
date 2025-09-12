@@ -28,7 +28,7 @@ export default function DeleteUserDialog({ user, children, open, onOpenChange }:
                     </AlertDialogDescription>
                 </AlertDialogHeader>
                 <AlertDialogFooter>
-                    <AlertDialogCancel className="bg-gray-700 border-gray-600 text-white hover:bg-gray-600">
+                    <AlertDialogCancel className="bg-gray-700 cursor-pointer border-gray-600 text-white hover:bg-gray-600">
                         Cancelar
                     </AlertDialogCancel>
                     <form action={deleteRecord}>
@@ -37,7 +37,7 @@ export default function DeleteUserDialog({ user, children, open, onOpenChange }:
                         <input type="hidden" name="revalidate" value="/dashboard/users" />
                         <AlertDialogAction
                             type="submit"
-                            className="bg-red-600 hover:bg-red-500 text-white"
+                            className="bg-red-600 cursor-pointer hover:bg-red-500 text-white"
                         >
                             Excluir
                         </AlertDialogAction>

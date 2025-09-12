@@ -39,21 +39,18 @@ export default function UserCard({ user }: UserCardProps) {
             {/* Header do card */}
             <div className="flex items-start justify-between mb-4">
                 <div className="flex items-center gap-3 flex-1">
-                    {user.avatar ? (
-                        <img
-                            src={user.avatar}
-                            alt={user.name}
-                            className="w-12 h-12 rounded-full object-cover"
-                            onError={(e) => {
-                                e.currentTarget.style.display = 'none';
-                                e.currentTarget.nextElementSibling?.classList.remove('hidden');
-                            }}
-                        />
-                    ) : null}
-                    <div 
-                        className={`w-12 h-12 rounded-full bg-gradient-to-br from-blue-500 to-purple-600 flex items-center justify-center text-white font-semibold text-sm ${user.avatar ? 'hidden' : ''}`}
-                    >
-                        {getInitials(user.name)}
+                    <div className="w-12 h-12 rounded-full border-2 border-gray-600 overflow-hidden">
+                        {user.avatar ? (
+                            <img
+                                src={`${process.env.NEXT_PUBLIC_API_URL}/files/users/${user.avatar}`}
+                                alt={user.name}
+                                className="w-full h-full object-cover"
+                            />
+                        ) : (
+                            <div className="w-full h-full bg-gradient-to-br from-blue-500 to-purple-600 flex items-center justify-center text-white font-semibold text-sm">
+                                {getInitials(user.name)}
+                            </div>
+                        )}
                     </div>
                     <div>
                         <h3 className="font-semibold text-white">{user.name}</h3>

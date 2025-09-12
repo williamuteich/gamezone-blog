@@ -201,8 +201,8 @@ export default function AfiliadoFormDialog({ afiliado, mode, children, open, onO
             </div>
           </div>
 
-          {state?.message && (
-            <div className={`mt-4 p-3 rounded-md ${state.success ? 'bg-green-900/30 text-green-300' : 'bg-red-900/30 text-red-300'}`}>
+          {state?.message && !state.success && (
+            <div className="mt-4 p-3 rounded-md bg-red-900/30 text-red-300">
               {state.message}
             </div>
           )}
