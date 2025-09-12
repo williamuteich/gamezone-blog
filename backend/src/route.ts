@@ -16,6 +16,7 @@ import { CreateTeamController } from './controllers/team/CreateTeamController';
 import { PutAllTemController } from './controllers/team/PutAllTeamController';
 import { DeleteTeamController } from './controllers/team/DeleteTeamController';
 import { DetailTeamController } from './controllers/team/DetailTeamController';
+import { AuthenticateTeamController } from './controllers/team/AuthenticateTeamController';
 
 import { isAuthenticated } from './middleware/isAuthenticated';
 
@@ -37,6 +38,7 @@ router.get('/team/me', isAuthenticated, new DetailTeamController().handle);
 
 //rotas Post
 router.post('/login', new AuthenticateUserController().handle);
+router.post('/team/login', new AuthenticateTeamController().handle);
 router.post('/users', isAuthenticated, uploadUsers.single('avatar'), new CreateUserController().handle);
 router.post('/affiliates', isAuthenticated, uploadAffiliates.single('image'), new CreateAffiliatesController().handle);
 router.post('/team', isAuthenticated, uploadTeam.single('avatar'), new CreateTeamController().handle);
