@@ -48,11 +48,20 @@ export default function TeamLoginPage() {
     }
 
     return (
-        <div className="min-h-screen bg-gradient-to-br from-gray-900 via-blue-900 to-slate-900 flex items-center justify-center p-4 relative overflow-hidden">
+        <div className="min-h-screen bg-gradient-to-br from-slate-950 via-gray-950 to-black flex items-center justify-center p-4 relative overflow-hidden">
             {/* Background Pattern */}
-            <div className="absolute inset-0 opacity-10">
-                <div className="absolute top-1/4 left-1/4 w-64 h-64 bg-blue-500 rounded-full filter blur-3xl"></div>
-                <div className="absolute bottom-1/4 right-1/4 w-96 h-96 bg-cyan-500 rounded-full filter blur-3xl"></div>
+            <div className="absolute inset-0">
+                <div className="absolute top-1/4 left-1/4 w-64 h-64 bg-blue-600/20 rounded-full filter blur-3xl animate-pulse"></div>
+                <div className="absolute bottom-1/4 right-1/4 w-96 h-96 bg-cyan-600/15 rounded-full filter blur-3xl animate-pulse" style={{animationDelay: '1s'}}></div>
+                <div className="absolute top-3/4 left-1/2 w-48 h-48 bg-indigo-600/10 rounded-full filter blur-3xl animate-pulse" style={{animationDelay: '2s'}}></div>
+            </div>
+            
+            {/* Animated Grid Background */}
+            <div className="absolute inset-0 opacity-5">
+                <div className="w-full h-full" style={{
+                    backgroundImage: 'radial-gradient(circle at 1px 1px, rgba(59, 130, 246, 0.3) 1px, transparent 0)',
+                    backgroundSize: '20px 20px'
+                }}></div>
             </div>
             
             <div className="w-full max-w-md space-y-8 relative z-10">

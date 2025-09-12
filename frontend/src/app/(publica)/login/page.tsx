@@ -48,89 +48,147 @@ export default function LoginPage() {
     }
 
     return (
-        <main className="flex min-h-screen flex-col items-center justify-center bg-gradient-to-b from-gray-900 to-gray-950 p-4">
-            <div className="w-full max-w-md p-8 bg-gray-800/70 backdrop-blur-sm rounded-xl border border-gray-700 shadow-2xl">
-                <div className="text-center mb-8">
-                    <div className="inline-flex items-center justify-center w-16 h-16 bg-blue-600 rounded-full mb-4">
+        <div className="min-h-screen bg-gradient-to-br from-gray-950 via-slate-950 to-black flex items-center justify-center p-4 relative overflow-hidden">
+            {/* Background Pattern */}
+            <div className="absolute inset-0">
+                <div className="absolute top-1/3 left-1/3 w-72 h-72 bg-blue-500/15 rounded-full filter blur-3xl animate-pulse"></div>
+                <div className="absolute bottom-1/3 right-1/3 w-80 h-80 bg-indigo-500/12 rounded-full filter blur-3xl animate-pulse" style={{animationDelay: '1.5s'}}></div>
+                <div className="absolute top-2/3 left-1/6 w-56 h-56 bg-purple-500/8 rounded-full filter blur-3xl animate-pulse" style={{animationDelay: '3s'}}></div>
+            </div>
+            
+            {/* Floating Particles Effect */}
+            <div className="absolute inset-0 opacity-20">
+                <div className="absolute top-20 left-20 w-2 h-2 bg-blue-400 rounded-full animate-bounce" style={{animationDelay: '0s', animationDuration: '3s'}}></div>
+                <div className="absolute top-40 right-32 w-1 h-1 bg-indigo-300 rounded-full animate-bounce" style={{animationDelay: '1s', animationDuration: '4s'}}></div>
+                <div className="absolute bottom-32 left-1/4 w-1.5 h-1.5 bg-blue-300 rounded-full animate-bounce" style={{animationDelay: '2s', animationDuration: '5s'}}></div>
+                <div className="absolute bottom-20 right-20 w-1 h-1 bg-indigo-400 rounded-full animate-bounce" style={{animationDelay: '0.5s', animationDuration: '3.5s'}}></div>
+            </div>
+            
+            <div className="w-full max-w-md space-y-8 relative z-10">
+                {/* Header com ícone FORA do card */}
+                <div className="text-center">
+                    <div className="mx-auto w-16 h-16 bg-gradient-to-br from-blue-500 to-indigo-600 rounded-full flex items-center justify-center mb-4 shadow-lg">
                         <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" className="w-8 h-8 text-white">
                             <path fillRule="evenodd" d="M3 2.25a.75.75 0 000 1.5v16.5h-.75a.75.75 0 000 1.5h15a.75.75 0 000-1.5h-.75V3.75a.75.75 0 000-1.5H3zm11.5 3.75a.75.75 0 01.75-.75h3.75a.75.75 0 010 1.5h-3.75a.75.75 0 01-.75-.75zm-8.25 6a.75.75 0 01.75-.75h12a.75.75 0 010 1.5H7a.75.75 0 01-.75-.75zm0 4.5a.75.75 0 01.75-.75h12a.75.75 0 010 1.5H7a.75.75 0 01-.75-.75zm0 4.5a.75.75 0 01.75-.75h12a.75.75 0 010 1.5H7a.75.75 0 01-.75-.75z" clipRule="evenodd" />
                         </svg>
                     </div>
-                    <h1 className="text-3xl font-bold text-white mb-2">GameZone Portal</h1>
-                    <p className="text-gray-400">Acesse sua conta administrativa</p>
+                    <h1 className="text-4xl font-bold bg-gradient-to-r from-blue-400 to-indigo-400 bg-clip-text text-transparent mb-2">
+                        GameZone Portal
+                    </h1>
+                    <p className="text-gray-200 font-medium">
+                        Portal dos Usuários
+                    </p>
+                    <p className="text-gray-300 text-sm mt-1">
+                        Acesse sua conta no GameZone
+                    </p>
                 </div>
+
+                <div className="bg-slate-900/70 backdrop-blur-xl rounded-2xl p-8 border border-slate-700/60 shadow-2xl">
                 
                 <form action={handleSubmit} className="space-y-6">
                     <div>
-                        <label htmlFor="email" className="block text-sm font-medium text-gray-300 mb-2">
+                        <label htmlFor="email" className="block text-sm font-semibold text-gray-200 mb-3">
                             Email
                         </label>
-                        <input
-                            id="email"
-                            name="email"
-                            type="email"
-                            autoComplete="email"
-                            className="w-full px-4 py-3 bg-gray-700 border border-gray-600 rounded-lg text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-colors"
-                            placeholder="seu@email.com"
-                            required
-                            disabled={isLoading}
-                        />
+                        <div className="relative">
+                            <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                                <svg className="h-5 w-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M16 12a4 4 0 10-8 0 4 4 0 008 0zm0 0v1.5a2.5 2.5 0 005 0V12a9 9 0 10-9 9m4.5-1.206a8.959 8.959 0 01-4.5 1.207" />
+                                </svg>
+                            </div>
+                            <input
+                                id="email"
+                                name="email"
+                                type="email"
+                                autoComplete="email"
+                                className="w-full pl-10 pr-4 py-3 bg-slate-800/60 border border-slate-600 rounded-xl text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-400 focus:border-transparent transition-all"
+                                placeholder="seu@email.com"
+                                required
+                                disabled={isLoading}
+                            />
+                        </div>
                     </div>
                     
                     <div>
-                        <label htmlFor="password" className="block text-sm font-medium text-gray-300 mb-2">
+                        <label htmlFor="password" className="block text-sm font-semibold text-gray-200 mb-3">
                             Senha
                         </label>
-                        <input
-                            id="password"
-                            name="password"
-                            type="password"
-                            autoComplete="current-password"
-                            className="w-full px-4 py-3 bg-gray-700 border border-gray-600 rounded-lg text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-colors"
-                            placeholder="Sua senha"
-                            required
-                            disabled={isLoading}
-                        />
+                        <div className="relative">
+                            <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                                <svg className="h-5 w-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
+                                </svg>
+                            </div>
+                            <input
+                                id="password"
+                                name="password"
+                                type="password"
+                                autoComplete="current-password"
+                                className="w-full pl-10 pr-4 py-3 bg-slate-800/60 border border-slate-600 rounded-xl text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-400 focus:border-transparent transition-all"
+                                placeholder="••••••••"
+                                required
+                                disabled={isLoading}
+                            />
+                        </div>
                     </div>
 
                     {error && (
-                        <div className="p-3 bg-red-900/50 border border-red-800 rounded-lg">
-                            <p className="text-red-300 text-sm">{error}</p>
+                        <div className="bg-red-800/40 border border-red-600/60 text-red-200 px-4 py-3 rounded-xl text-sm backdrop-blur-sm">
+                            <div className="flex items-center gap-2">
+                                <svg className="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                                </svg>
+                                {error}
+                            </div>
                         </div>
                     )}
 
                     <button
                         type="submit"
                         disabled={isLoading}
-                        className={`w-full text-white cursor-pointer py-3 px-4 rounded-lg font-medium transition-all ${isLoading
-                            ? 'bg-blue-400 cursor-not-allowed'
-                            : 'bg-blue-600 hover:bg-blue-500'
-                            }`}
+                        className="w-full bg-gradient-to-r from-blue-600 to-blue-700 hover:from-blue-500 hover:to-blue-600 disabled:from-gray-600 disabled:to-gray-600 disabled:cursor-not-allowed cursor-pointer text-white font-semibold py-3 px-6 rounded-xl transition-all duration-200 transform hover:scale-[1.02] disabled:hover:scale-100 shadow-lg"
                     >
                         {isLoading ? (
-                            <span className="flex items-center justify-center">
-                                <svg className="animate-spin -ml-1 mr-3 h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                            <div className="flex items-center justify-center gap-2">
+                                <svg className="animate-spin h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
                                     <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
                                     <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
                                 </svg>
                                 Acessando...
-                            </span>
+                            </div>
                         ) : (
-                            'Entrar no Portal'
+                            <div className="flex items-center justify-center gap-2">
+                                <svg className="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M11 16l-4-4m0 0l4-4m-4 4h14m-5 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h7a3 3 0 013 3v1" />
+                                </svg>
+                                Entrar no Portal
+                            </div>
                         )}
                     </button>
                 </form>
-                
-                <div className="mt-6 text-center">
-                    <p className="text-sm text-gray-400">
-                        É da equipe? <a href="/login/team" className="text-blue-400 hover:text-blue-300 font-medium">Acessar como equipe</a>
-                    </p>
-                </div>
-                
-                <div className="mt-8 text-center text-gray-400 text-sm">
-                    <p>© 2023 GameZone Blog - Todos os direitos reservados</p>
+                    
+                    {/* Footer Section */}
+                    <div className="mt-8 pt-6 border-t border-slate-600/50">
+                        <div className="text-center space-y-3">
+                            <div className="pt-2">
+                                <a 
+                                    href="/login/team" 
+                                    className="inline-flex items-center gap-2 text-blue-400 hover:text-blue-300 text-sm font-medium transition-colors group"
+                                >
+                                    Acesso da Equipe
+                                    <svg className="h-4 w-4 group-hover:translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M14 5l7 7m0 0l-7 7m7-7H3" />
+                                    </svg>
+                                </a>
+                            </div>
+                            
+                            <div className="text-center text-gray-300 text-sm">
+                                <p>© 2023 GameZone Blog - Todos os direitos reservados</p>
+                            </div>
+                        </div>
+                    </div>
                 </div>
             </div>
-        </main>
+        </div>
     )
 }
