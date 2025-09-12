@@ -1,6 +1,8 @@
 import prisma from '../../prisma';
 import { hash } from 'bcrypt';
 import { TeamRole } from '../../generated/prisma';
+import fs from 'fs';
+import path from 'path';
 
 interface PutTeamRequest {
     id: string;
@@ -42,7 +44,18 @@ export class PutTeamService {
         if (email !== undefined) updateData.email = email;
         if (role !== undefined) updateData.role = role as TeamRole;
         if (status !== undefined) updateData.status = typeof status === 'string' ? status === 'true' : status;
-        if (avatar !== undefined) updateData.avatar = avatar;
+
+        // Gerenciar avatar - se um novo avatar foi enviado, deletar o antigo
+        if (avatar !== undefined) {
+            // Se já tinha um avatar e está sendo substituído, deletar o arquivo antigo
+            if (teamMemberExists.avatar && avatar !== teamMemberExists.avatar) {
+                const oldAvatarPath = path.join('./tmp/team', teamMemberExists.avatar);
+                if (fs.existsSync(oldAvatarPath)) {
+                    fs.unlinkSync(oldAvatarPath);
+                }
+            }
+            updateData.avatar = avatar;
+        }
 
         if (password) {
             updateData.password = await hash(password, 8);

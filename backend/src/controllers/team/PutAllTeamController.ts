@@ -3,7 +3,9 @@ import { PutTeamService } from "../../services/team/PutTemService";
 
 export class PutAllTemController {
     async handle(req: Request, res: Response) {
-        const { id, name, email, password, role, status, avatar } = req.body;
+        const { id, name, email, password, role, status } = req.body;
+
+        const avatar = req.file ? req.file.filename : undefined;
 
         try {
             const putTeamService = new PutTeamService();

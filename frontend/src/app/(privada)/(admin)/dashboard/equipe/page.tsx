@@ -1,20 +1,66 @@
+import { requireAuth } from "@/lib/auth";
 import Container from "../../compoente/Containet";
 import TeamStats from "./components/TeamStats";
 import TeamTable from "./components/TeamTable";
+import TeamFormDialog from "./components/TeamFormDialog";
 import SearchItems from "@/app/components/searchItem";
 import Paginacao from "@/app/components/paginacao";
-import { Button } from "@/components/ui/button";
-import { Plus } from "lucide-react";
-import TeamFormDialog from "./components/TeamFormDialog";
 
-export default function TeamPage() {
-    // Dados vazios por enquanto
-    const team: any[] = [];
-    const stats = {
+export default async function TeamPage({ searchParams }: { searchParams: Promise<{ search: string, page: string, status: string, role: string }> }) {
+    const { search, page, status, role } = await searchParams;
+
+    const { token } = await requireAuth();
+
+    const currentPage = page ? parseInt(page) : 1;
+
+    const teamResponse = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/team?${search ? `search=${search}&` : ''}${page ? `page=${page}&` : ''}${status ? `status=${status}&` : ''}${role ? `role=${role}&` : ''}limit=10`, {
+        headers: {
+            'Content-Type': 'application/json',
+            Authorization: `Bearer ${token}`,
+        },
+        cache: 'no-store',
+        next: { revalidate: 0 }
+    });
+
+    let team: any[] = [];
+    let pagination = {
+        currentPage: 1,
+        totalPages: 1,
+        totalCount: 0,
+        limit: 10,
+        hasNext: false,
+        hasPrev: false
+    };
+    let stats = {
         totalMembers: 0,
         activeMembers: 0,
         inactiveMembers: 0
     };
+
+    if (!teamResponse.ok) {
+        console.error('Error fetching team:', teamResponse.status, teamResponse.statusText);
+    } else {
+        const response = await teamResponse.json();
+
+        if (response && typeof response === 'object') {
+            if (response.team && Array.isArray(response.team)) {
+                team = response.team;
+                pagination = response.pagination || pagination;
+                stats = {
+                    totalMembers: response.team.length,
+                    activeMembers: response.team.filter((m: any) => m.status).length,
+                    inactiveMembers: response.team.filter((m: any) => !m.status).length
+                };
+            } else if (Array.isArray(response)) {
+                team = response;
+                stats = {
+                    totalMembers: response.length,
+                    activeMembers: response.filter((m: any) => m.status).length,
+                    inactiveMembers: response.filter((m: any) => !m.status).length
+                };
+            }
+        }
+    }
 
     return (
         <Container>
@@ -26,26 +72,24 @@ export default function TeamPage() {
                         <p className="text-gray-400 mt-1">Gerencie os membros da equipe</p>
                     </div>
                     <TeamFormDialog mode="add">
-                        <Button className="px-4 py-2 cursor-pointer bg-blue-600 hover:bg-blue-500 text-white rounded-lg transition-colors">
-                            <Plus size={16} className="mr-2" />
-                            Novo Membro
-                        </Button>
+                        <button className="px-4 py-2 cursor-pointer bg-blue-600 hover:bg-blue-500 text-white rounded-lg transition-colors">
+                            + Novo Membro
+                        </button>
                     </TeamFormDialog>
                 </div>
 
                 {/* Estatísticas */}
                 <TeamStats team={team} stats={stats} />
 
-                {/* Busca */}
-                <div className="flex flex-col sm:flex-row gap-4">
-                    <SearchItems />
-                </div>
+                {/* Filtros e busca */}
 
-                {/* Tabela de Equipe */}
-                <TeamTable team={team} />
+                <SearchItems />
+
+                {/* Tabela da equipe */}
+                <TeamTable key={`team-table-${currentPage}-${team.length}`} team={team} />
 
                 {/* Paginação */}
-                <Paginacao data={team} totalRecords={0} />
+                <Paginacao data={team} totalRecords={pagination.totalCount} />
             </div>
         </Container>
     );

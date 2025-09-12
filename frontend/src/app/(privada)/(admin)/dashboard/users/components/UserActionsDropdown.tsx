@@ -37,13 +37,11 @@ export default function UserActionsDropdown({ user }: UserActionsDropdownProps) 
         
         {isDropdownOpen && (
           <>
-            {/* Overlay para fechar o dropdown */}
             <div 
               className="fixed inset-0 z-10" 
               onClick={() => setIsDropdownOpen(false)}
             />
             
-            {/* Menu dropdown */}
             <div className="absolute right-4 -top-[28px] z-20 bg-gray-800 border border-gray-700 rounded-lg shadow-lg min-w-[120px] py-1">
               <button 
                 className="w-full cursor-pointer px-3 py-2 text-left text-sm text-white hover:bg-gray-700 transition-colors flex items-center gap-2"
@@ -65,7 +63,6 @@ export default function UserActionsDropdown({ user }: UserActionsDropdownProps) 
         )}
       </div>
 
-      {/* Dialogs controlados por estado */}
       <UserFormDialog 
         user={user} 
         mode="edit" 

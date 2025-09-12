@@ -8,7 +8,7 @@ interface Payload {
 }
 
 
-export function isAuthenticated(req: Request, res: Response, next: NextFunction) {
+export function isTeamAuthenticated(req: Request, res: Response, next: NextFunction) {
   //resumindo: Basicamente se o token n estiver no header, ele tenta pegar do cookies
   //se n tiver em nenhum dos dois, retorna 401
   //se tiver, verifica se é valido e se o usuario é admin

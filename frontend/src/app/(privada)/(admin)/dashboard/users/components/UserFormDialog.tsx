@@ -26,7 +26,6 @@ export default function UserFormDialog({ user, mode, children, open, onOpenChang
   const dialogCloseRef = useRef<HTMLButtonElement>(null)
   const formRef = useRef<HTMLFormElement>(null)
 
-  // Carregar avatar existente quando for edição
   useEffect(() => {
     if (mode === "edit" && user?.avatar) {
       setImagePreview(`${process.env.NEXT_PUBLIC_API_URL}/files/users/${user.avatar}`)
@@ -37,14 +36,12 @@ export default function UserFormDialog({ user, mode, children, open, onOpenChang
 
   useEffect(() => {
     if (state?.success) {
-      // Fecha o modal após sucesso
       if (onOpenChange) {
         onOpenChange(false);
       } else {
         dialogCloseRef.current?.click();
       }
       
-      // Reseta o formulário
       formRef.current?.reset()
       setImagePreview(null)
     }
@@ -81,7 +78,6 @@ export default function UserFormDialog({ user, mode, children, open, onOpenChang
           <input type="hidden" name="url" value="/users" />
           <input type="hidden" name="method" value={user?.id ? "PUT" : "POST"} />
           <input type="hidden" name="revalidate" value="/dashboard/users" />
-          {/* Avatar existente para edição */}
           {mode === "edit" && user?.avatar && (
             <input type="hidden" name="avatar" value={user.avatar} />
           )}
@@ -126,7 +122,6 @@ export default function UserFormDialog({ user, mode, children, open, onOpenChang
                   onChange={handleImageChange}
                   className="bg-gray-800 border-gray-700 text-white file:bg-gray-700 file:text-white file:border-0 file:rounded file:mr-2 cursor-pointer file:cursor-pointer"
                 />
-                {/* Campo hidden para manter avatar existente quando não há novo upload */}
                 {mode === "edit" && user?.avatar && (
                   <input type="hidden" name="avatarExistente" value={user.avatar} />
                 )}

@@ -20,14 +20,14 @@ export class PutAffiliateService {
 
     const { id, url, ...rest } = data;
     
-    // Se há nova imagem, buscar a imagem antiga para removê-la
-    let oldImage: string | null = null;
-    if (rest.imageUrl && rest.imageUrl !== 'undefined') {
-      const existingAffiliate = await prisma.affiliate.findUnique({
-        where: { id },
-        select: { imageUrl: true }
-      });
-      oldImage = existingAffiliate?.imageUrl || null;
+    // Buscar o afiliado existente para verificar imagem antiga
+    const existingAffiliate = await prisma.affiliate.findUnique({
+      where: { id },
+      select: { imageUrl: true }
+    });
+
+    if (!existingAffiliate) {
+      throw new Error("Affiliate not found");
     }
     
     // Mapear url para link (nome do campo no banco)
@@ -40,27 +40,19 @@ export class PutAffiliateService {
       Object.entries(mappedData).filter(([_, value]) => value !== undefined && value !== 'undefined')
     );
 
-    const findAffiliate = await prisma.affiliate.findFirst({
-      where: { id }
-    });
-
-    if (!findAffiliate) {
-      throw new Error("Affiliate not Found");
+    // Gerenciar imagem - se uma nova imagem foi enviada, deletar a antiga
+    if (filteredData.imageUrl && existingAffiliate.imageUrl && filteredData.imageUrl !== existingAffiliate.imageUrl) {
+      const oldImagePath = path.join('./tmp/affiliates', existingAffiliate.imageUrl);
+      if (fs.existsSync(oldImagePath)) {
+        fs.unlinkSync(oldImagePath);
+        console.log(`Imagem antiga do afiliado removida: ${oldImagePath}`);
+      }
     }
 
     await prisma.affiliate.update({
       where: { id },
       data: filteredData
     });
-
-    // Remover imagem antiga se uma nova foi enviada
-    if (oldImage && filteredData.imageUrl && oldImage !== filteredData.imageUrl) {
-      const oldImagePath = path.join('./tmp/affiliates', oldImage);
-      if (fs.existsSync(oldImagePath)) {
-        fs.unlinkSync(oldImagePath);
-        console.log(`Imagem antiga do afiliado removida: ${oldImagePath}`);
-      }
-    }
 
     return { message: "Affiliate successfully updated" };
   }

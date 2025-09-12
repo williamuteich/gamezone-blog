@@ -41,11 +41,6 @@ export class PutUserService {
             }
         }
 
-        let oldAvatar: string | null = null;
-        if (rest.avatar && rest.avatar !== 'undefined') {
-            oldAvatar = existingUser?.avatar || null;
-        }
-
         const data = Object.fromEntries(
             Object.entries(rest).filter(([_, value]) => value !== undefined && value !== 'undefined')
         );
@@ -59,18 +54,18 @@ export class PutUserService {
             data.isAdmin = isAdmin;
         }
 
-        const user = await prisma.user.update({
-            where: { id },
-            data
-        });
-
-        // Remover avatar antigo se um novo foi enviado
-        if (oldAvatar && data.avatar && oldAvatar !== data.avatar) {
-            const oldAvatarPath = path.join('./tmp/users', oldAvatar);
+        // Gerenciar avatar - se um novo avatar foi enviado, deletar o antigo
+        if (data.avatar && existingUser.avatar && data.avatar !== existingUser.avatar) {
+            const oldAvatarPath = path.join('./tmp/users', existingUser.avatar);
             if (fs.existsSync(oldAvatarPath)) {
                 fs.unlinkSync(oldAvatarPath);
             }
         }
+
+        const user = await prisma.user.update({
+            where: { id },
+            data
+        });
 
         return { message: "User successfully updated" };
     }

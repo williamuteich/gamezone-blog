@@ -72,6 +72,13 @@ app.use(cors({
   maxAge: 86400, 
 }))
 
+app.use('/files/team', express.static('./tmp/team', {
+  setHeaders: (res, path) => {
+    res.setHeader('Cross-Origin-Resource-Policy', 'cross-origin');
+    res.setHeader('Cache-Control', 'public, max-age=31536000'); // Cache por 1 ano
+  }
+}));
+
 app.use('/files/users', express.static('./tmp/users', {
   setHeaders: (res, path) => {
     res.setHeader('Cross-Origin-Resource-Policy', 'cross-origin');
@@ -86,14 +93,8 @@ app.use('/files/affiliates', express.static('./tmp/affiliates', {
   }
 }));
 
-app.use('/files/team', express.static('./tmp/team', {
-  setHeaders: (res, path) => {
-    res.setHeader('Cross-Origin-Resource-Policy', 'cross-origin');
-    res.setHeader('Cache-Control', 'public, max-age=31536000'); // Cache por 1 ano
-  }
-}));
-
 app.use('/login', loginLimiter); 
+app.use('/team/login', loginLimiter);
 app.use(generalLimiter); 
 
 app.use(router);

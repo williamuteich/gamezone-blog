@@ -1,9 +1,9 @@
 import { Mail, Calendar, Shield } from "lucide-react";
-import UserActionsDropdown from "./UserActionsDropdown";
-import { User, UserCardProps } from "@/types/user";
+import TeamActionsDropdown from "./TeamActionsDropdown";
+import { Team, TeamCardProps } from "@/types/team";
 
-
-export default function UserCard({ user }: UserCardProps) {
+export default function TeamCard({ team }: TeamCardProps) {
+    // Função para pegar as iniciais do nome
     const getInitials = (name: string) => {
         return name
             .split(' ')
@@ -13,6 +13,7 @@ export default function UserCard({ user }: UserCardProps) {
             .slice(0, 2);
     };
 
+    // Função para formatar a data
     const formatDate = (dateString: string) => {
         const date = new Date(dateString);
         return date.toLocaleDateString('pt-BR', {
@@ -22,13 +23,14 @@ export default function UserCard({ user }: UserCardProps) {
         });
     };
 
+    // Função para formatar o nome da role
     const formatRole = (role: string) => {
         const roleMap: { [key: string]: string } = {
-            'user': 'Usuário',
-            'editor': 'Editor',
-            'admin': 'Administrador'
+            'ADMIN': 'Administrador',
+            'EDITOR': 'Editor',
+            'MODERATOR': 'Moderador'
         };
-        return roleMap[role.toLowerCase()] || role;
+        return roleMap[role.toUpperCase()] || role;
     };
 
     return (
@@ -36,59 +38,58 @@ export default function UserCard({ user }: UserCardProps) {
             <div className="flex items-start justify-between mb-4">
                 <div className="flex items-center gap-3 flex-1">
                     <div className="w-12 h-12 rounded-full border-2 border-gray-600 overflow-hidden">
-                        {user.avatar ? (
+                        {team.avatar ? (
                             <img
-                                src={`${process.env.NEXT_PUBLIC_API_URL}/files/users/${user.avatar}`}
-                                alt={user.name}
+                                src={`${process.env.NEXT_PUBLIC_API_URL}/files/team/${team.avatar}`}
+                                alt={team.name}
                                 className="w-full h-full object-cover"
                             />
                         ) : (
-                            <div className="w-full h-full bg-gradient-to-br from-blue-500 to-purple-600 flex items-center justify-center text-white font-semibold text-sm">
-                                {getInitials(user.name)}
+                            <div className="w-full h-full bg-gradient-to-br from-green-500 to-teal-600 flex items-center justify-center text-white font-semibold text-sm">
+                                {getInitials(team.name)}
                             </div>
                         )}
                     </div>
                     <div>
-                        <h3 className="font-semibold text-white">{user.name}</h3>
+                        <h3 className="font-semibold text-white">{team.name}</h3>
                         <p className="text-sm text-gray-400 flex items-center gap-1">
                             <Mail className="h-3 w-3" />
-                            {user.email}
+                            {team.email}
                         </p>
                     </div>
                 </div>
                 <div className="flex-shrink-0">
-                    <UserActionsDropdown user={user} />
+                    <TeamActionsDropdown team={team} />
                 </div>
             </div>
 
             <div className="space-y-3">
                 <div className="flex items-center justify-between">
                     <span className="text-sm text-gray-400">Função</span>
-                    <span className={`px-2 py-1 rounded-full text-xs font-medium ${
-                        user.isAdmin || user.role.toLowerCase() === 'admin'
-                            ? 'bg-purple-900/50 text-purple-300'
-                            : user.role.toLowerCase() === 'editor'
-                            ? 'bg-blue-900/50 text-blue-300'
-                            : 'bg-gray-700/50 text-gray-300'
-                    }`}>
+                    <span
+                        className={`px-2 py-1 rounded-full text-xs font-medium ${
+                            team.role.toUpperCase() === "ADMIN"
+                                ? "bg-purple-900/50 text-purple-300"
+                                : team.role.toUpperCase() === "EDITOR"
+                                ? "bg-blue-900/50 text-blue-300"
+                                : "bg-yellow-900/50 text-yellow-300"
+                        }`}
+                    >
                         <Shield className="inline h-3 w-3 mr-1" />
-                        {formatRole(user.role)}
+                        {formatRole(team.role)}
                     </span>
                 </div>
 
                 <div className="flex items-center justify-between">
-                    <span className="text-sm text-gray-400">Posts</span>
-                    <span className="text-sm font-medium text-white">{user.posts || 0}</span>
-                </div>
-
-                <div className="flex items-center justify-between">
                     <span className="text-sm text-gray-400">Status</span>
-                    <span className={`px-2 py-1 rounded-full text-xs font-medium ${
-                        user.status 
-                            ? 'bg-green-900/50 text-green-300' 
-                            : 'bg-red-900/50 text-red-300'
-                    }`}>
-                        {user.status ? 'Ativo' : 'Inativo'}
+                    <span
+                        className={`px-2 py-1 rounded-full text-xs font-medium ${
+                            team.status
+                                ? "bg-green-900/50 text-green-300"
+                                : "bg-red-900/50 text-red-300"
+                        }`}
+                    >
+                        {team.status ? "Ativo" : "Inativo"}
                     </span>
                 </div>
 
@@ -96,7 +97,7 @@ export default function UserCard({ user }: UserCardProps) {
                     <span className="text-sm text-gray-400">Criado em</span>
                     <span className="text-sm text-gray-300 flex items-center gap-1">
                         <Calendar className="h-3 w-3" />
-                        {formatDate(user.createdAt)}
+                        {formatDate(team.createdAt)}
                     </span>
                 </div>
             </div>
