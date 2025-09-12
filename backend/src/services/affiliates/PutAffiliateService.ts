@@ -45,7 +45,6 @@ export class PutAffiliateService {
       const oldImagePath = path.join('./tmp/affiliates', existingAffiliate.imageUrl);
       if (fs.existsSync(oldImagePath)) {
         fs.unlinkSync(oldImagePath);
-        console.log(`Imagem antiga do afiliado removida: ${oldImagePath}`);
       }
     }
 

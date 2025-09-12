@@ -8,7 +8,6 @@ interface AfiliadoTableProps {
 }
 
 export default function AfiliadoTable({ afiliados }: AfiliadoTableProps) {
-    // Verificar se afiliados é um array válido
     if (!Array.isArray(afiliados)) {
         return (
             <div className="bg-gray-800/50 backdrop-blur-sm rounded-xl border border-gray-700 p-8 text-center">

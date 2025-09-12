@@ -18,8 +18,6 @@ import { useSession } from "@/app/components/sessionProvider"
 export default function Sidebar() {
     const { user } = useSession();
 
-    console.log("recebendo dados do suuario no sidebar:", user);
-    
     const pathname = usePathname();
     const [isProductsOpen, setIsProductsOpen] = useState(false);
     const [isSettingsOpen, setIsSettingsOpen] = useState(false);

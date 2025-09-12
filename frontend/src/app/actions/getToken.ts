@@ -20,7 +20,6 @@ export async function getSession() {
     
     if (!token) return { user: null };
     
-    // Decodifica o JWT no servidor (mais seguro)
     const payload = decodeJwt(token);
     const user: User = {
       id: payload.sub as string,

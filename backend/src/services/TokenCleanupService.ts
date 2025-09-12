@@ -14,7 +14,6 @@ export class TokenCleanupService {
         }
       });
 
-      console.log(`Token cleanup: ${result.count} tokens expirados removidos da blacklist`);
       return result;
     } catch (error) {
       console.error('Erro na limpeza de tokens:', error);
@@ -33,6 +32,5 @@ export class TokenCleanupService {
     // Executar uma vez na inicialização
     this.cleanupExpiredTokens();
     
-    console.log('Job de limpeza de tokens iniciado (executa a cada 1 hora)');
   }
 }

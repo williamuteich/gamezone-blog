@@ -26,7 +26,6 @@ export default function AfiliadoFormDialog({ afiliado, mode, children, open, onO
   const dialogCloseRef = useRef<HTMLButtonElement>(null)
   const formRef = useRef<HTMLFormElement>(null)
   
-  // Carregar imagem existente quando for edição
   useEffect(() => {
     if (mode === "edit" && afiliado?.imageUrl) {
       setImagePreview(`${process.env.NEXT_PUBLIC_API_URL}/files/affiliates/${afiliado.imageUrl}`)
@@ -37,14 +36,12 @@ export default function AfiliadoFormDialog({ afiliado, mode, children, open, onO
   
   useEffect(() => {
     if (state?.success) {
-      // Fecha o modal após sucesso
       if (onOpenChange) {
         onOpenChange(false);
       } else {
         dialogCloseRef.current?.click();
       }
       
-      // Reseta o formulário
       formRef.current?.reset()
       setImagePreview(null)
     }

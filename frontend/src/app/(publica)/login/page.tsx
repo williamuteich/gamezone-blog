@@ -36,7 +36,6 @@ export default function LoginPage() {
                 return
             }
 
-            // Cookie foi salvo automaticamente, agora atualiza a sessão
             await refreshSession();
             
             router.push('/dashboard')

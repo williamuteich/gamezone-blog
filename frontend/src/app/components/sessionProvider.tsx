@@ -34,7 +34,6 @@ export function SessionProvider({ children }: { children: ReactNode }) {
   };
 
   const refreshSession = async () => {
-    console.log('SessionProvider - atualizando sessão...');
     await fetchSession();
   };
 

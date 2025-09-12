@@ -26,7 +26,6 @@ export class CreateAffiliatesController {
             
             return res.json(affiliate);
         } catch (error) {
-            console.log('Erro no controller:', error.message);
             return res.status(400).json({ error: error.message });
         }
     }

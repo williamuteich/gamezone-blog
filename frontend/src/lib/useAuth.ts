@@ -15,7 +15,6 @@ export function useAuth() {
       });
 
       if (response.ok) {
-        // Atualizar sessão e redirecionar
         await refreshSession();
         router.push("/login");
       } else {
@@ -36,7 +35,6 @@ export function useAuth() {
       });
 
       if (response.ok) {
-        // Atualizar sessão e redirecionar
         await refreshSession();
         router.push("/login/team");
       } else {
@@ -44,7 +42,6 @@ export function useAuth() {
       }
     } catch (error) {
       console.error('Erro no logout da equipe:', error);
-      // Mesmo com erro, atualizar sessão e redirecionar
       await refreshSession();
       router.push("/login/team");
     }

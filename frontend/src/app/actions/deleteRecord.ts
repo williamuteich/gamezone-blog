@@ -18,9 +18,6 @@ export async function deleteRecord(formData: FormData) {
         body: JSON.stringify({ id }),
     })
 
-    if (!res.ok) {
-        console.log("Erro ao excluir usuário")
-    }
 
     revalidatePath(`${revalidate}`)
 }

@@ -52,14 +52,12 @@ export async function logoutUser() {
         });
 
         if (response.ok) {
-            // Redirecionar para login após logout bem-sucedido
             redirect("/login");
         } else {
             throw new Error('Erro ao fazer logout');
         }
     } catch (error) {
         console.error('Erro no logout:', error);
-        // Mesmo com erro, redirecionar para login (cookie será limpo)
         redirect("/login");
     }
 }
@@ -72,14 +70,12 @@ export async function logoutTeam() {
         });
 
         if (response.ok) {
-            // Redirecionar para login da equipe após logout bem-sucedido
             redirect("/login/team");
         } else {
             throw new Error('Erro ao fazer logout da equipe');
         }
     } catch (error) {
         console.error('Erro no logout da equipe:', error);
-        // Mesmo com erro, redirecionar para login da equipe
         redirect("/login/team");
     }
 }

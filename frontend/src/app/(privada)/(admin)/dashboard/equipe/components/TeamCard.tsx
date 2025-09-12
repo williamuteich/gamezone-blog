@@ -3,7 +3,6 @@ import TeamActionsDropdown from "./TeamActionsDropdown";
 import { Team, TeamCardProps } from "@/types/team";
 
 export default function TeamCard({ team }: TeamCardProps) {
-    // Função para pegar as iniciais do nome
     const getInitials = (name: string) => {
         return name
             .split(' ')
@@ -13,7 +12,6 @@ export default function TeamCard({ team }: TeamCardProps) {
             .slice(0, 2);
     };
 
-    // Função para formatar a data
     const formatDate = (dateString: string) => {
         const date = new Date(dateString);
         return date.toLocaleDateString('pt-BR', {
@@ -23,7 +21,6 @@ export default function TeamCard({ team }: TeamCardProps) {
         });
     };
 
-    // Função para formatar o nome da role
     const formatRole = (role: string) => {
         const roleMap: { [key: string]: string } = {
             'ADMIN': 'Administrador',
