@@ -35,7 +35,7 @@ export default async function UsersPage({ searchParams }: { searchParams: Promis
     let stats = {
         totalUsers: 0,
         activeUsers: 0,
-        adminUsers: 0
+        inactiveUsers: 0
     };
     
     if (!user.ok) {
@@ -58,7 +58,7 @@ export default async function UsersPage({ searchParams }: { searchParams: Promis
                 stats = {
                     totalUsers: response.length,
                     activeUsers: response.filter((u: any) => u.status).length,
-                    adminUsers: response.filter((u: any) => u.isAdmin).length
+                    inactiveUsers: response.filter((u: any) => !u.status).length
                 };
             }
         }

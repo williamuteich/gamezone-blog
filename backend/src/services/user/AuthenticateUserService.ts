@@ -21,6 +21,11 @@ export class AuthenticateUserService {
       throw new Error('Invalid email or password');
     }
 
+    // Verificar se o usuário está ativo
+    if (!user.status) {
+      throw new Error('Usuário inativo. Contate o administrador.');
+    }
+
     const passwordMatch = await bcrypt.compare(password, user.password);
     if (!passwordMatch) {
       throw new Error('Invalid email or password');
@@ -31,8 +36,7 @@ export class AuthenticateUserService {
         name: user.name,
         email: user.email,
         avatar: user.avatar,
-        role: user.role,
-        isAdmin: user.isAdmin,
+        status: user.status,
       },
       process.env.JWT_SECRET,
       {

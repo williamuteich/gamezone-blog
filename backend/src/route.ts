@@ -19,6 +19,7 @@ import { DetailTeamController } from './controllers/team/DetailTeamController';
 import { AuthenticateTeamController } from './controllers/team/AuthenticateTeamController';
 
 import { isTeamAuthenticated } from './middleware/isTeamAuthenticated';
+import { isUserAuthenticated } from './middleware/isUserAuthenticated';
 
 import uploadConfig from './config/multer';
 
@@ -30,7 +31,7 @@ const uploadAffiliates = multer(uploadConfig.upload('./tmp/affiliates'));
 const uploadTeam = multer(uploadConfig.upload('./tmp/team'));
 
 //rotas get
-router.get('/me', isTeamAuthenticated, new DetailUserController().handle);
+router.get('/me', isUserAuthenticated, new DetailUserController().handle);
 router.get('/users', isTeamAuthenticated, new GetAllUserController().handle);
 router.get('/affiliates', isTeamAuthenticated, new GetAllAffiliateController().handle);
 router.get('/team', isTeamAuthenticated, new GetAllTeamController().handle);

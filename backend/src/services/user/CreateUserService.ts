@@ -5,8 +5,6 @@ export interface UserRequest {
   name: string;
   email: string;
   password: string;
-  isAdmin?: boolean;
-  role?: string;
   status?: boolean;
   avatar?: string;
 }
@@ -33,15 +31,10 @@ export class CreateUserService {
 
     const passwordHash = await this.hashPassword(data.password);
 
-    const role = data.role || 'user';
-    const isAdmin = role === 'admin' || role === 'editor';
-
     const user = await prisma.user.create({
       data: { 
         ...data, 
-        password: passwordHash,
-        role: role,
-        isAdmin: isAdmin
+        password: passwordHash
       },
     });
 

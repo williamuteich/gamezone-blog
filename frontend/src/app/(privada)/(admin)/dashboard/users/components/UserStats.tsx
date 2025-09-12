@@ -1,10 +1,10 @@
-import { User, Shield } from "lucide-react";
+import { User } from "lucide-react";
 import { User as UserType, UserStatsProps } from "@/types/user";
 
 export default function UserStats({ users = [], stats }: UserStatsProps) {
     const totalUsers = stats?.totalUsers ?? users.length;
     const activeUsers = stats?.activeUsers ?? users.filter(u => u.status).length;
-    const adminUsers = stats?.adminUsers ?? users.filter(u => u.isAdmin).length;
+    const inactiveUsers = stats?.inactiveUsers ?? users.filter(u => !u.status).length;
     
     return (
         <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
@@ -36,13 +36,13 @@ export default function UserStats({ users = [], stats }: UserStatsProps) {
             
             <div className="bg-gray-800/50 backdrop-blur-sm rounded-xl p-4 border border-gray-700">
                 <div className="flex items-center gap-3">
-                    <div className="w-10 h-10 bg-purple-600/20 rounded-lg flex items-center justify-center">
-                        <Shield className="h-5 w-5 text-purple-400" />
+                    <div className="w-10 h-10 bg-red-600/20 rounded-lg flex items-center justify-center">
+                        <div className="w-2 h-2 bg-red-400 rounded-full"></div>
                     </div>
                     <div>
-                        <p className="text-sm text-gray-400">Administradores</p>
+                        <p className="text-sm text-gray-400">Usuários Inativos</p>
                         <p className="text-xl font-bold text-white">
-                            {adminUsers}
+                            {inactiveUsers}
                         </p>
                     </div>
                 </div>

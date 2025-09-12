@@ -122,6 +122,12 @@ export default function LoginPage() {
                     </button>
                 </form>
                 
+                <div className="mt-6 text-center">
+                    <p className="text-sm text-gray-400">
+                        É da equipe? <a href="/login/team" className="text-blue-400 hover:text-blue-300 font-medium">Acessar como equipe</a>
+                    </p>
+                </div>
+                
                 <div className="mt-8 text-center text-gray-400 text-sm">
                     <p>© 2023 GameZone Blog - Todos os direitos reservados</p>
                 </div>

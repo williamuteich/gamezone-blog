@@ -34,6 +34,16 @@ export default {
                 const allowedExtensions = ['.jpg', '.jpeg', '.png', '.gif', '.webp'];
                 const fileExtension = extname(file.originalname).toLowerCase();
 
+                // Verificar nome do arquivo para evitar path traversal
+                if (file.originalname.includes('..') || file.originalname.includes('/') || file.originalname.includes('\\')) {
+                    return callback(new Error('Nome de arquivo inválido'), false);
+                }
+
+                // Verificar tamanho do nome do arquivo
+                if (file.originalname.length > 255) {
+                    return callback(new Error('Nome de arquivo muito longo'), false);
+                }
+
                 if (allowedMimeTypes.includes(file.mimetype) && allowedExtensions.includes(fileExtension)) {
                     return callback(null, true);
                 } else {

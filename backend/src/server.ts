@@ -14,15 +14,28 @@ app.use(helmet({
     directives: {
       defaultSrc: ["'self'"],
       styleSrc: ["'self'", "'unsafe-inline'"], 
-      scriptSrc: ["'self'"],
-      imgSrc: ["'self'", "data:", "https:"], 
+      scriptSrc: ["'self'", "'strict-dynamic'"],
+      imgSrc: ["'self'", "data:", "https:", "blob:"], 
+      connectSrc: ["'self'"],
+      fontSrc: ["'self'", "https:", "data:"],
+      objectSrc: ["'none'"],
+      mediaSrc: ["'self'"],
+      frameSrc: ["'none'"],
     },
   },
+  hsts: {
+    maxAge: 31536000,
+    includeSubDomains: true,
+    preload: true
+  },
+  noSniff: true,
+  xssFilter: true,
+  referrerPolicy: { policy: "strict-origin-when-cross-origin" }
 }));
 
 const loginLimiter = rateLimit({
   windowMs: process.env.NODE_ENV === 'production' ? 15 * 60 * 1000 : 5 * 60 * 1000,
-  max: process.env.NODE_ENV === 'production' ? 5 : 10, 
+  max: 5, 
   message: {
     error: process.env.NODE_ENV === 'production' 
       ? 'Muitas tentativas de login. Tente novamente em 15 minutos.'
@@ -100,6 +113,19 @@ app.use(generalLimiter);
 app.use(router);
 
 app.use((err: Error, req: Request, res: Response, next: NextFunction) => {
+  // Log estruturado para auditoria de segurança
+  const errorLog = {
+    timestamp: new Date().toISOString(),
+    method: req.method,
+    url: req.url,
+    ip: req.ip || req.connection.remoteAddress,
+    userAgent: req.get('User-Agent'),
+    error: err.message,
+    stack: process.env.NODE_ENV === 'development' ? err.stack : undefined
+  };
+  
+  console.error('Security/Error Log:', JSON.stringify(errorLog, null, 2));
+  
   if (err instanceof Error) {
     return res.status(400).json({ error: err.message });
   }

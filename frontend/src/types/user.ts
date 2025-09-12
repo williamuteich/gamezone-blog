@@ -4,10 +4,8 @@ export interface User {
     name: string;
     email: string;
     password?: string;
-    role: string;
     status: boolean;
     avatar?: string;
-    isAdmin: boolean;
     createdAt: string;
     updatedAt?: string;
     posts?: number;
@@ -37,6 +35,6 @@ export interface UserStatsProps {
     stats?: {
         totalUsers: number;
         activeUsers: number;
-        adminUsers: number;
+        inactiveUsers: number;
     };
 }

@@ -1,19 +1,19 @@
 import { NextFunction, Request, Response } from "express";
 import jwt from "jsonwebtoken";
 
-interface TeamPayload {
+interface UserPayload {
   sub: string;
-  role: string;
   name: string;
   email: string;
   avatar?: string;
   status: boolean;
   exp?: number;
+  // Note: NÃO deve ter 'role' - isso é exclusivo de Team
 }
 
-export function isTeamAuthenticated(req: Request, res: Response, next: NextFunction) {
-  // Middleware para autenticar APENAS membros da equipe (com role)
-  // Verifica token válido, role válida e status ativo
+export function isUserAuthenticated(req: Request, res: Response, next: NextFunction) {
+  // Middleware para autenticar APENAS usuários normais (sem role)
+  // Rejeita tokens de Team e verifica status ativo
   let token = req.headers.authorization?.split(" ")[1];
 
   if (!token && req.cookies?.token) {
@@ -25,24 +25,18 @@ export function isTeamAuthenticated(req: Request, res: Response, next: NextFunct
   }
 
   try {
-    const payload = jwt.verify(token, process.env.JWT_SECRET!) as TeamPayload;
+    const payload = jwt.verify(token, process.env.JWT_SECRET!) as UserPayload;
 
-    // Verificar se é token de equipe (deve ter 'role')
-    if (!payload.role) {
+    // Verificar se é token de usuário (não deve ter 'role')
+    if ('role' in payload) {
       res.clearCookie("token");
-      return res.status(403).json({ error: "Token de usuário não permitido nesta rota" });
+      return res.status(403).json({ error: "Token de equipe não permitido nesta rota" });
     }
 
-    // Verificar se role é válida
-    if (!["ADMIN", "EDITOR", "MODERATOR"].includes(payload.role)) {
-      res.clearCookie("token");
-      return res.status(403).json({ error: "Role inválida" });
-    }
-
-    // Verificar se membro da equipe está ativo
+    // Verificar se usuário está ativo
     if (!payload.status) {
       res.clearCookie("token");
-      return res.status(403).json({ error: "Membro da equipe inativo" });
+      return res.status(403).json({ error: "Usuário inativo" });
     }
 
     // Verificar expiração

@@ -49,11 +49,6 @@ export class PutUserService {
             data.password = await this.hashPassword(password);
         }
 
-        if (data.role) {
-            const isAdmin = data.role === 'admin' || data.role === 'editor';
-            data.isAdmin = isAdmin;
-        }
-
         // Gerenciar avatar - se um novo avatar foi enviado, deletar o antigo
         if (data.avatar && existingUser.avatar && data.avatar !== existingUser.avatar) {
             const oldAvatarPath = path.join('./tmp/users', existingUser.avatar);

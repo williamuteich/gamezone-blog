@@ -174,29 +174,6 @@ export default function UserFormDialog({ user, mode, children, open, onOpenChang
               />
             </div>
 
-            <div className="grid gap-3">
-              <Label htmlFor="role" className="text-white">
-                Função
-              </Label>
-              <select
-                id="role"
-                name="role"
-                defaultValue={user?.role || "user"}
-                className="bg-gray-800 border border-gray-700 text-white rounded-md px-3 py-2 focus:outline-none focus:border-blue-500"
-              >
-                <option value="user">Usuário</option>
-                <option value="editor">Editor</option>
-                <option value="admin">Administrador</option>
-              </select>
-              <div className="text-xs text-gray-400 mt-1">
-                <div className="space-y-1">
-                  <div><span className="text-orange-400">•</span> <strong>Usuário:</strong> Acesso apenas ao blog público</div>
-                  <div><span className="text-blue-400">•</span> <strong>Editor:</strong> Pode criar e editar posts + acesso ao dashboard</div>
-                  <div><span className="text-purple-400">•</span> <strong>Administrador:</strong> Acesso total ao sistema</div>
-                </div>
-              </div>
-            </div>
-
             <div className="flex items-center space-x-2">
               <input
                 id="status"

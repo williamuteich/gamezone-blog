@@ -22,15 +22,6 @@ export default function UserCard({ user }: UserCardProps) {
         });
     };
 
-    const formatRole = (role: string) => {
-        const roleMap: { [key: string]: string } = {
-            'user': 'Usuário',
-            'editor': 'Editor',
-            'admin': 'Administrador'
-        };
-        return roleMap[role.toLowerCase()] || role;
-    };
-
     return (
         <div className="bg-gray-800/50 backdrop-blur-sm rounded-xl p-6 border border-gray-700 hover:border-gray-600 transition-colors">
             <div className="flex items-start justify-between mb-4">
@@ -62,20 +53,6 @@ export default function UserCard({ user }: UserCardProps) {
             </div>
 
             <div className="space-y-3">
-                <div className="flex items-center justify-between">
-                    <span className="text-sm text-gray-400">Função</span>
-                    <span className={`px-2 py-1 rounded-full text-xs font-medium ${
-                        user.isAdmin || user.role.toLowerCase() === 'admin'
-                            ? 'bg-purple-900/50 text-purple-300'
-                            : user.role.toLowerCase() === 'editor'
-                            ? 'bg-blue-900/50 text-blue-300'
-                            : 'bg-gray-700/50 text-gray-300'
-                    }`}>
-                        <Shield className="inline h-3 w-3 mr-1" />
-                        {formatRole(user.role)}
-                    </span>
-                </div>
-
                 <div className="flex items-center justify-between">
                     <span className="text-sm text-gray-400">Posts</span>
                     <span className="text-sm font-medium text-white">{user.posts || 0}</span>

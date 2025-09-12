@@ -22,7 +22,7 @@ export class AuthenticateTeamService {
     }
 
     if (!team.status) {
-      throw new Error('Account is disabled');
+      throw new Error('Membro da equipe inativo. Contate o administrador.');
     }
 
     if (!['ADMIN', 'EDITOR', 'MODERATOR'].includes(team.role)) {
@@ -41,6 +41,7 @@ export class AuthenticateTeamService {
         email: team.email,
         avatar: team.avatar,
         role: team.role,
+        status: team.status,
         type: 'team'
       },
       process.env.JWT_SECRET,
