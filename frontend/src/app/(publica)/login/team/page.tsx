@@ -1,14 +1,17 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useRef } from 'react'
 import { useRouter } from 'next/navigation'
 import { useSession } from '@/app/components/sessionProvider'
+import ReCAPTCHA from 'react-google-recaptcha'
 
 export default function TeamLoginPage() {
     const [error, setError] = useState<string | null>(null)
     const [isLoading, setIsLoading] = useState(false)
+    const [recaptchaToken, setRecaptchaToken] = useState<string | null>(null)
     const { refreshSession } = useSession()
     const router = useRouter()
+    const recaptchaRef = useRef<ReCAPTCHA>(null)
 
     async function handleSubmit(formData: FormData) {
         setIsLoading(true)
@@ -23,16 +26,27 @@ export default function TeamLoginPage() {
                 return
             }
 
+            // Verificar se reCAPTCHA foi completado
+            if (!recaptchaToken) {
+                setError('Por favor, complete a verificação reCAPTCHA')
+                return
+            }
+
             const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/team/login`, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ email, password }),
+                body: JSON.stringify({ email, password, recaptchaToken }),
                 credentials: 'include', 
             })
 
             if (!res.ok) {
                 const { error, message } = await res.json().catch(() => ({}))
                 setError(error || message || 'Falha no login')
+                // Reset reCAPTCHA em caso de erro
+                if (recaptchaRef.current) {
+                    recaptchaRef.current.reset()
+                    setRecaptchaToken(null)
+                }
                 return
             }
 
@@ -42,8 +56,20 @@ export default function TeamLoginPage() {
         } catch (err) {
             console.error('Unexpected error:', err)
             setError('Erro inesperado. Tente novamente.')
+            // Reset reCAPTCHA em caso de erro
+            if (recaptchaRef.current) {
+                recaptchaRef.current.reset()
+                setRecaptchaToken(null)
+            }
         } finally {
             setIsLoading(false)
+        }
+    }
+
+    const handleRecaptchaChange = (token: string | null) => {
+        setRecaptchaToken(token)
+        if (token && error === 'Por favor, complete a verificação reCAPTCHA') {
+            setError(null)
         }
     }
 
@@ -127,6 +153,18 @@ export default function TeamLoginPage() {
                                     />
                                 </div>
                             </div>
+                        </div>
+
+                        {/* reCAPTCHA */}
+                        <div className="flex justify-center">
+                            <ReCAPTCHA
+                                ref={recaptchaRef}
+                                sitekey={process.env.NEXT_PUBLIC_RECAPTCHA_SITE_KEY!}
+                                onChange={handleRecaptchaChange}
+                                onExpired={() => setRecaptchaToken(null)}
+                                theme="dark"
+                                size="normal"
+                            />
                         </div>
 
                         {error && (

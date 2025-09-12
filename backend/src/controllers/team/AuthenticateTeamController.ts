@@ -3,11 +3,11 @@ import { AuthenticateTeamService } from '../../services/team/AuthenticateTeamSer
 
 export class AuthenticateTeamController {
   async handle(req: Request, res: Response) {
-    const { email, password } = req.body;
+    const { email, password, recaptchaToken } = req.body;
 
     try {
       const authenticateTeamService = new AuthenticateTeamService();
-      const { token } = await authenticateTeamService.execute({ email, password });
+      const { token } = await authenticateTeamService.execute({ email, password, recaptchaToken });
 
       res.cookie('token', token, {
         httpOnly: true,
