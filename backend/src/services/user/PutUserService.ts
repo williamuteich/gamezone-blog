@@ -20,12 +20,29 @@ export class PutUserService {
             throw new Error("ID is required");
         }
 
+        // Verificar se o usuário existe
+        const existingUser = await prisma.user.findUnique({
+            where: { id },
+            select: { avatar: true, email: true }
+        });
+
+        if (!existingUser) {
+            throw new Error("User not found");
+        }
+
+        // Verificar se o email mudou e se já existe em outro usuário
+        if (rest.email && rest.email !== existingUser.email) {
+            const emailExists = await prisma.user.findUnique({
+                where: { email: rest.email }
+            });
+
+            if (emailExists) {
+                throw new Error("Este email já está sendo usado por outro usuário");
+            }
+        }
+
         let oldAvatar: string | null = null;
         if (rest.avatar && rest.avatar !== 'undefined') {
-            const existingUser = await prisma.user.findUnique({
-                where: { id },
-                select: { avatar: true }
-            });
             oldAvatar = existingUser?.avatar || null;
         }
 
@@ -46,10 +63,6 @@ export class PutUserService {
             where: { id },
             data
         });
-
-        if (!user) {
-            throw new Error("User not found");
-        }
 
         // Remover avatar antigo se um novo foi enviado
         if (oldAvatar && data.avatar && oldAvatar !== data.avatar) {

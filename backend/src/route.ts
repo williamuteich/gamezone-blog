@@ -1,5 +1,4 @@
 import { Router } from 'express';
-import express from 'express';
 import multer from 'multer';
 
 import { CreateUserController } from './controllers/user/CreateUserController';
@@ -12,10 +11,11 @@ import { CreateAffiliatesController } from './controllers/affiliates/CreateAffil
 import { GetAllAffiliateController } from './controllers/affiliates/GetAllAffiliateController';
 import { PutAffiliateController } from './controllers/affiliates/PutAffiliateController';
 import { DeleteAffiliateController } from './controllers/affiliates/DeleteAffiliateController';
-import { CreateTeamController } from './controllers/team/CreateTeamController';
 import { GetAllTeamController } from './controllers/team/GetAllTeamController';
-import { PutTeamController } from './controllers/team/PutTeamController';
+import { CreateTeamController } from './controllers/team/CreateTeamController';
+import { PutAllTemController } from './controllers/team/PutAllTeamController';
 import { DeleteTeamController } from './controllers/team/DeleteTeamController';
+import { DetailTeamController } from './controllers/team/DetailTeamController';
 
 import { isAuthenticated } from './middleware/isAuthenticated';
 
@@ -32,22 +32,23 @@ const uploadTeam = multer(uploadConfig.upload('./tmp/team'));
 router.get('/me', isAuthenticated, new DetailUserController().handle);
 router.get('/users', isAuthenticated, new GetAllUserController().handle);
 router.get('/affiliates', isAuthenticated, new GetAllAffiliateController().handle);
-router.get('/team', new GetAllTeamController().handle);
+router.get('/team', isAuthenticated, new GetAllTeamController().handle);
+router.get('/team/me', isAuthenticated, new DetailTeamController().handle);
 
 //rotas Post
 router.post('/login', new AuthenticateUserController().handle);
 router.post('/users', isAuthenticated, uploadUsers.single('avatar'), new CreateUserController().handle);
 router.post('/affiliates', isAuthenticated, uploadAffiliates.single('image'), new CreateAffiliatesController().handle);
-router.post('/team', uploadTeam.single('avatar'), new CreateTeamController().handle);
+router.post('/team', isAuthenticated, uploadTeam.single('avatar'), new CreateTeamController().handle);
 
 //rotas put
 router.put('/users', isAuthenticated, uploadUsers.single('avatar'), new PutUserController().handle);
 router.put('/affiliates', isAuthenticated, uploadAffiliates.single('image'), new PutAffiliateController().handle);
-router.put('/team', uploadTeam.single('avatar'), new PutTeamController().handle);
+router.put('/team', isAuthenticated, uploadTeam.single('avatar'), new PutAllTemController().handle);
 
 //rotas delete
 router.delete('/users', isAuthenticated, new DeleteUserController().handle);
 router.delete('/affiliates', isAuthenticated, new DeleteAffiliateController().handle);
-router.delete('/team', new DeleteTeamController().handle);
+router.delete('/team', isAuthenticated, new DeleteTeamController().handle);
 
 export { router };
