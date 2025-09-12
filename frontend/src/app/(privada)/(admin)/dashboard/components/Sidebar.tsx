@@ -8,7 +8,7 @@ import {
     SheetTitle,
     SheetTrigger,
 } from "@/components/ui/sheet"
-import { Menu, Home, Users, FileText, Settings, BarChart3, Package, FolderTree, Tag, ChevronDown, ChevronRight, User, Image, Palette, Mail, Shield, Database, Globe, Bell, UserCircle } from "lucide-react"
+import { Menu, Home, Users, FileText, Settings, BarChart3, Package, FolderTree, Tag, ChevronDown, ChevronRight, User, Image, Palette, Mail, Shield, Database, Globe, Bell, UserCircle, UsersRound } from "lucide-react"
 import Link from "next/link"
 import { usePathname } from "next/navigation"
 import { useState, useEffect } from "react"
@@ -28,6 +28,7 @@ export default function Sidebar() {
         { icon: Home, label: "Dashboard", href: "/dashboard" },
         { icon: FileText, label: "Posts", href: "/dashboard/posts" },
         { icon: Users, label: "Usuários", href: "/dashboard/users" },
+        { icon: UsersRound, label: "Equipe", href: "/dashboard/equipe" },
         { icon: BarChart3, label: "Analytics", href: "/dashboard/analytics" },
     ]
 
